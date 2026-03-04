@@ -764,6 +764,713 @@ details[open] > summary .chevron {
   font-size: 0.9em;
   padding: 40px;
 }
+
+/* ============================================
+   HEADER TOOLBAR
+   ============================================ */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.toolbar-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  transition: all 0.15s;
+  width: 36px;
+  height: 36px;
+  position: relative;
+}
+
+.toolbar-btn:hover {
+  border-color: var(--border);
+  color: var(--text);
+  background: var(--surface-hover);
+}
+
+.toolbar-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+  pointer-events: none;
+}
+
+.toolbar-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+  margin: 0 4px;
+}
+
+.toolbar-btn[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 0.65em;
+  font-family: var(--font-mono);
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  z-index: 200;
+  pointer-events: none;
+}
+
+/* ============================================
+   TOAST NOTIFICATIONS
+   ============================================ */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toast {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  font-size: 0.85em;
+  color: var(--text);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  animation: toast-in 0.25s ease, toast-out 0.25s ease 1.75s forwards;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toast.toast-success { border-left: 3px solid var(--success); }
+.toast.toast-error { border-left: 3px solid var(--danger); }
+.toast.toast-info { border-left: 3px solid var(--accent); }
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toast-out {
+  from { opacity: 1; }
+  to { opacity: 0; transform: translateY(-8px); }
+}
+
+/* ============================================
+   MODAL
+   ============================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fade-in 0.15s ease;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  max-width: 560px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+  animation: modal-in 0.2s ease;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.modal-title {
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1.3em;
+  padding: 4px;
+  line-height: 1;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+
+.modal-close:hover {
+  color: var(--text);
+}
+
+.modal-body {
+  font-size: 0.9em;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ============================================
+   SHORTCUTS TABLE
+   ============================================ */
+.shortcuts-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.shortcuts-table td {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.shortcuts-table td:first-child {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.shortcuts-table td:last-child {
+  text-align: right;
+}
+
+.kbd {
+  display: inline-block;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+  color: var(--text-dim);
+  min-width: 24px;
+  text-align: center;
+}
+
+/* ============================================
+   PREVIEW ANIMATIONS
+   ============================================ */
+@keyframes qr-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+@keyframes qr-glow { 0%,100% { box-shadow: 0 0 0 rgba(79,195,247,0); } 50% { box-shadow: 0 0 32px rgba(79,195,247,0.25); } }
+@keyframes qr-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes qr-rotate { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+
+.preview-container.anim-pulse { animation: qr-pulse 2s ease-in-out infinite; }
+.preview-container.anim-glow { animation: qr-glow 2.5s ease-in-out infinite; }
+.preview-container.anim-float { animation: qr-float 3s ease-in-out infinite; }
+.preview-container.anim-rotate { animation: qr-rotate 10s linear infinite; }
+
+/* ============================================
+   DATA TYPE TABS
+   ============================================ */
+.data-type-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.data-type-tab {
+  font-family: var(--font-sans);
+  font-size: 0.7em;
+  font-weight: 500;
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.data-type-tab:hover {
+  border-color: var(--text-muted);
+  color: var(--text);
+}
+
+.data-type-tab.active {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.data-type-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.data-type-form .control-input {
+  font-size: 0.85em;
+  padding: 8px 12px;
+}
+
+.data-type-form .field-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.data-type-form .field-label {
+  font-size: 0.75em;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
+.data-type-form select {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.85em;
+  outline: none;
+  cursor: pointer;
+}
+
+.auto-detect-hint {
+  font-size: 0.7em;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 3px 0;
+  display: none;
+}
+
+.auto-detect-hint:hover {
+  text-decoration: underline;
+}
+
+/* ============================================
+   TEMPLATE GALLERY
+   ============================================ */
+.template-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px 0 8px;
+  scrollbar-width: thin;
+}
+
+.template-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+.template-scroll::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 2px;
+}
+
+.template-card {
+  flex-shrink: 0;
+  width: 80px;
+  cursor: pointer;
+  text-align: center;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 4px 6px;
+  background: var(--surface);
+  transition: all 0.15s;
+}
+
+.template-card:hover {
+  border-color: var(--text-muted);
+  transform: translateY(-2px);
+}
+
+.template-card.active {
+  border-color: var(--accent);
+}
+
+.template-card canvas,
+.template-card img {
+  width: 56px;
+  height: 56px;
+  border-radius: 4px;
+  display: block;
+  margin: 0 auto 4px;
+}
+
+.template-card-name {
+  font-size: 0.55em;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.template-colors {
+  display: flex;
+  gap: 2px;
+  justify-content: center;
+  margin-top: 3px;
+}
+
+.template-color-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+}
+
+/* ============================================
+   EXPORT DROPDOWN
+   ============================================ */
+.export-group {
+  position: relative;
+}
+
+.export-dropdown {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  margin-bottom: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 6px;
+  min-width: 160px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  z-index: 200;
+}
+
+.export-dropdown.visible {
+  display: block;
+}
+
+.export-dropdown button {
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.8em;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.1s;
+}
+
+.export-dropdown button:hover {
+  background: var(--surface-hover);
+}
+
+/* ============================================
+   BATCH MODE
+   ============================================ */
+.batch-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fade-in 0.15s ease;
+}
+
+.batch-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  max-width: 700px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+  animation: modal-in 0.2s ease;
+}
+
+.batch-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+  resize: vertical;
+  outline: none;
+}
+
+.batch-textarea:focus {
+  border-color: var(--border-active);
+}
+
+.batch-progress {
+  height: 4px;
+  background: var(--bg);
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 12px 0;
+}
+
+.batch-progress-bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.2s;
+  width: 0;
+}
+
+.batch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.batch-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+  text-align: center;
+  background: var(--bg);
+}
+
+.batch-item canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.batch-item-label {
+  font-size: 0.55em;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ============================================
+   READABILITY SCORE
+   ============================================ */
+.readability-bar {
+  margin-top: 8px;
+  text-align: center;
+}
+
+.readability-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #f85149, #f7c948, #3fb950);
+  position: relative;
+  margin-bottom: 6px;
+}
+
+.readability-marker {
+  position: absolute;
+  top: -3px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text);
+  border: 2px solid var(--bg);
+  transform: translateX(-50%);
+  transition: left 0.3s;
+}
+
+.readability-label {
+  font-family: var(--font-mono);
+  font-size: 0.7em;
+  color: var(--text-dim);
+}
+
+.readability-score {
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ============================================
+   COLOR HARMONY
+   ============================================ */
+.harmony-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.harmony-pill {
+  font-family: var(--font-sans);
+  font-size: 0.7em;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.harmony-pill:hover {
+  border-color: var(--text-muted);
+  color: var(--text);
+}
+
+.harmony-swatches {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.harmony-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 2px solid var(--border);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.harmony-swatch:hover {
+  transform: scale(1.15);
+  border-color: var(--text-muted);
+}
+
+/* ============================================
+   ANIMATION TOGGLE
+   ============================================ */
+.anim-toggle-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.anim-toggle-btn {
+  font-family: var(--font-mono);
+  font-size: 0.65em;
+  padding: 3px 8px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.anim-toggle-btn:hover { border-color: var(--text-muted); color: var(--text); }
+.anim-toggle-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+/* ============================================
+   PRINT
+   ============================================ */
+/* ============================================
+   SCANNER
+   ============================================ */
+.scanner-video-wrap {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #000;
+  aspect-ratio: 4/3;
+}
+
+.scanner-video-wrap video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.scanner-viewfinder {
+  position: absolute;
+  inset: 15%;
+  border: 2px solid var(--accent);
+  border-radius: var(--radius-sm);
+  opacity: 0.6;
+}
+
+.scanner-result {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  word-break: break-all;
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+}
+
+.scanner-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.scanner-tab {
+  flex: 1;
+  text-align: center;
+  padding: 8px;
+  font-size: 0.8em;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: all 0.15s;
+}
+
+.scanner-tab.active {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+@media print {
+  .app-header, .sidebar, .export-actions, .readability-bar, .anim-toggle-row, .toast-container { display: none !important; }
+  .app-layout { display: block; }
+  .preview-area { padding: 0; min-height: auto; justify-content: start; }
+  .preview-card { border: none; box-shadow: none; background: none; padding: 0; }
+  body { background: white; }
+}
 </style>
 </head>
 <body data-theme="dark">
@@ -791,18 +1498,41 @@ details[open] > summary .chevron {
       <div class="app-subtitle">QR Code Generator</div>
     </div>
   </div>
-  <button class="theme-toggle" id="theme-toggle" title="Toggle light/dark mode" aria-label="Toggle theme">
-    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="5"/>
-      <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-      <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-    </svg>
-    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-    </svg>
-  </button>
+  <div class="header-actions">
+    <button class="toolbar-btn" id="btn-undo" disabled data-tooltip="Undo (Ctrl+Z)" aria-label="Undo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+    </button>
+    <button class="toolbar-btn" id="btn-redo" disabled data-tooltip="Redo (Ctrl+Y)" aria-label="Redo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10"/></svg>
+    </button>
+    <span class="toolbar-divider"></span>
+    <button class="toolbar-btn" id="btn-save" data-tooltip="Save (Ctrl+S)" aria-label="Save config">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+    </button>
+    <button class="toolbar-btn" id="btn-load" data-tooltip="Load Config" aria-label="Load config">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    </button>
+    <button class="toolbar-btn" id="btn-scanner" data-tooltip="Scanner" aria-label="Scan QR code">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 012-2h2"/><path d="M17 3h2a2 2 0 012 2v2"/><path d="M21 17v2a2 2 0 01-2 2h-2"/><path d="M7 21H5a2 2 0 01-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg>
+    </button>
+    <button class="toolbar-btn" id="btn-shortcuts" data-tooltip="Shortcuts (?)" aria-label="Keyboard shortcuts">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </button>
+    <span class="toolbar-divider"></span>
+    <button class="theme-toggle" id="theme-toggle" title="Toggle light/dark mode" aria-label="Toggle theme">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
+  </div>
+  <input type="file" id="config-file-input" accept=".json" style="display:none">
 </header>
 
 <!-- ============================================
@@ -813,11 +1543,31 @@ details[open] > summary .chevron {
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
 
-    <!-- URL INPUT -->
+    <!-- DATA TYPE INPUT -->
     <div class="control-section url-section">
-      <label class="control-label" for="qr-data">URL or Text</label>
-      <input type="text" id="qr-data" class="control-input" placeholder="https://example.com" value="https://example.com">
+      <div class="data-type-tabs" id="data-type-tabs">
+        <button class="data-type-tab active" data-type="url">URL</button>
+        <button class="data-type-tab" data-type="text">Text</button>
+        <button class="data-type-tab" data-type="wifi">WiFi</button>
+        <button class="data-type-tab" data-type="vcard">vCard</button>
+        <button class="data-type-tab" data-type="email">Email</button>
+        <button class="data-type-tab" data-type="sms">SMS</button>
+        <button class="data-type-tab" data-type="phone">Phone</button>
+        <button class="data-type-tab" data-type="geo">Geo</button>
+      </div>
+      <div id="data-type-form-container">
+        <input type="text" id="qr-data" class="control-input" placeholder="https://example.com" value="https://example.com">
+      </div>
+      <div class="auto-detect-hint" id="auto-detect-hint"></div>
     </div>
+
+    <!-- STYLE TEMPLATES -->
+    <details class="control-section">
+      <summary class="section-header">Style Templates <span class="chevron">&#9656;</span></summary>
+      <div class="section-body">
+        <div class="template-scroll" id="template-gallery"></div>
+      </div>
+    </details>
 
     <!-- QR OPTIONS -->
     <details class="control-section" open>
@@ -1025,6 +1775,21 @@ details[open] > summary .chevron {
       </div>
     </details>
 
+    <!-- COLOR HARMONY -->
+    <details class="control-section">
+      <summary class="section-header">Color Harmony <span class="chevron">&#9656;</span></summary>
+      <div class="section-body">
+        <div class="harmony-pills" id="harmony-pills">
+          <button class="harmony-pill" data-harmony="complementary">Complementary</button>
+          <button class="harmony-pill" data-harmony="analogous">Analogous</button>
+          <button class="harmony-pill" data-harmony="triadic">Triadic</button>
+          <button class="harmony-pill" data-harmony="split">Split-Comp</button>
+          <button class="harmony-pill" data-harmony="random">Random Beautiful</button>
+        </div>
+        <div class="harmony-swatches" id="harmony-swatches"></div>
+      </div>
+    </details>
+
     <!-- CENTER LOGO -->
     <details class="control-section">
       <summary class="section-header">Center Logo <span class="chevron">&#9656;</span></summary>
@@ -1070,19 +1835,47 @@ details[open] > summary .chevron {
     <div class="preview-card">
       <div class="preview-container" id="qr-preview"></div>
     </div>
+    <div class="readability-bar" id="readability-bar">
+      <div class="readability-track"><div class="readability-marker" id="readability-marker" style="left:80%"></div></div>
+      <div class="readability-label">Scan Readability: <span class="readability-score" id="readability-score">Good</span></div>
+    </div>
+    <div class="anim-toggle-row" id="anim-toggles">
+      <button class="anim-toggle-btn active" data-anim="none">None</button>
+      <button class="anim-toggle-btn" data-anim="pulse">Pulse</button>
+      <button class="anim-toggle-btn" data-anim="glow">Glow</button>
+      <button class="anim-toggle-btn" data-anim="float">Float</button>
+      <button class="anim-toggle-btn" data-anim="rotate">Rotate</button>
+    </div>
     <div class="export-actions">
-      <button class="btn btn-primary" id="download-png">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v9m0 0L5 7m3 3l3-3M2 12v1a2 2 0 002 2h8a2 2 0 002-2v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Download PNG
+      <div class="export-group">
+        <button class="btn btn-primary" id="export-main-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v9m0 0L5 7m3 3l3-3M2 12v1a2 2 0 002 2h8a2 2 0 002-2v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Export
+        </button>
+        <div class="export-dropdown" id="export-dropdown">
+          <button id="download-png">Download PNG</button>
+          <button id="download-svg">Download SVG</button>
+          <button id="download-jpeg">Download JPEG</button>
+          <button id="download-webp">Download WebP</button>
+          <button id="btn-embed">Get Embed Code</button>
+          <button id="btn-print">Print</button>
+        </div>
+      </div>
+      <button class="btn btn-secondary" id="copy-png">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 11V3a2 2 0 012-2h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Copy
       </button>
-      <button class="btn btn-secondary" id="download-svg">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v9m0 0L5 7m3 3l3-3M2 12v1a2 2 0 002 2h8a2 2 0 002-2v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Download SVG
+      <button class="btn btn-secondary" id="btn-batch">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="10" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="10" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="10" y="10" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>
+        Batch
       </button>
     </div>
   </section>
 
 </main>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
 
 <!-- ============================================
      JAVASCRIPT
@@ -1092,42 +1885,219 @@ details[open] > summary .chevron {
   'use strict';
 
   // ============================================
-  // STATE
+  // DEFAULT STATE
   // ============================================
-  var state = {
+  var DEFAULT_STATE = {
     data: 'https://example.com',
     width: 300,
     height: 300,
     margin: 10,
-    qrOptions: {
-      errorCorrectionLevel: 'Q'
-    },
-    dotsOptions: {
-      type: 'rounded',
-      color: '#4fc3f7',
-      gradient: null
-    },
-    cornersSquareOptions: {
-      type: 'extra-rounded',
-      color: '#4fc3f7'
-    },
-    cornersDotOptions: {
-      type: 'dot',
-      color: '#4fc3f7'
-    },
-    backgroundOptions: {
-      color: '#0d1117'
-    },
+    qrOptions: { errorCorrectionLevel: 'Q' },
+    dotsOptions: { type: 'rounded', color: '#4fc3f7', gradient: null },
+    cornersSquareOptions: { type: 'extra-rounded', color: '#4fc3f7' },
+    cornersDotOptions: { type: 'dot', color: '#4fc3f7' },
+    backgroundOptions: { color: '#0d1117' },
     image: '',
-    imageOptions: {
-      hideBackgroundDots: true,
-      imageSize: 0.35,
-      margin: 5,
-      crossOrigin: 'anonymous'
-    }
+    imageOptions: { hideBackgroundDots: true, imageSize: 0.35, margin: 5, crossOrigin: 'anonymous' }
   };
 
+  var state = deepClone(DEFAULT_STATE);
   var qrCode = null;
+
+  // ============================================
+  // UNDO / REDO
+  // ============================================
+  var undoStack = [];
+  var redoStack = [];
+  var MAX_UNDO = 50;
+  var lastSnapshotTime = 0;
+
+  function pushUndo() {
+    var now = Date.now();
+    if (now - lastSnapshotTime < 300) return;
+    lastSnapshotTime = now;
+    undoStack.push(serializeState());
+    if (undoStack.length > MAX_UNDO) undoStack.shift();
+    redoStack = [];
+    updateUndoButtons();
+  }
+
+  function undo() {
+    if (undoStack.length === 0) return;
+    redoStack.push(serializeState());
+    var prev = undoStack.pop();
+    deserializeState(prev);
+    syncUIFromState();
+    forceUpdate();
+    updateUndoButtons();
+    autoSave();
+  }
+
+  function redo() {
+    if (redoStack.length === 0) return;
+    undoStack.push(serializeState());
+    var next = redoStack.pop();
+    deserializeState(next);
+    syncUIFromState();
+    forceUpdate();
+    updateUndoButtons();
+    autoSave();
+  }
+
+  function updateUndoButtons() {
+    var btnUndo = document.getElementById('btn-undo');
+    var btnRedo = document.getElementById('btn-redo');
+    if (btnUndo) btnUndo.disabled = undoStack.length === 0;
+    if (btnRedo) btnRedo.disabled = redoStack.length === 0;
+  }
+
+  // ============================================
+  // DEEP CLONE & SERIALIZE
+  // ============================================
+  function deepClone(obj) {
+    return JSON.parse(JSON.stringify(obj));
+  }
+
+  function serializeState() {
+    var s = deepClone(state);
+    // Strip large image data for undo stack (keep reference, not megabytes)
+    if (s.image && s.image.length > 5000) {
+      s._hasImage = true;
+      s._imageRef = state.image; // direct reference, not cloned
+    }
+    return s;
+  }
+
+  function deserializeState(s) {
+    var img = '';
+    if (s._imageRef) {
+      img = s._imageRef;
+      delete s._imageRef;
+      delete s._hasImage;
+    } else if (s.image) {
+      img = s.image;
+    }
+    state.data = s.data || '';
+    state.width = s.width || 300;
+    state.height = s.height || 300;
+    state.margin = s.margin != null ? s.margin : 10;
+    state.qrOptions = s.qrOptions || { errorCorrectionLevel: 'Q' };
+    state.dotsOptions = s.dotsOptions || { type: 'rounded', color: '#4fc3f7', gradient: null };
+    state.cornersSquareOptions = s.cornersSquareOptions || { type: 'extra-rounded', color: '#4fc3f7' };
+    state.cornersDotOptions = s.cornersDotOptions || { type: 'dot', color: '#4fc3f7' };
+    state.backgroundOptions = s.backgroundOptions || { color: '#0d1117' };
+    state.image = img;
+    state.imageOptions = s.imageOptions || { hideBackgroundDots: true, imageSize: 0.35, margin: 5, crossOrigin: 'anonymous' };
+  }
+
+  // ============================================
+  // SYNC UI FROM STATE
+  // ============================================
+  function syncUIFromState() {
+    // Data input
+    document.getElementById('qr-data').value = state.data;
+
+    // Size
+    document.getElementById('qr-size').value = state.width;
+    document.getElementById('qr-size-val').textContent = state.width + 'px';
+
+    // Margin
+    document.getElementById('qr-margin').value = state.margin;
+    document.getElementById('qr-margin-val').textContent = state.margin;
+
+    // Error correction
+    var ecVal = state.qrOptions.errorCorrectionLevel || 'Q';
+    var ecRadio = document.getElementById('ec-' + ecVal.toLowerCase());
+    if (ecRadio) ecRadio.checked = true;
+
+    // Dot style grid
+    syncStyleGrid('dot-style-grid', state.dotsOptions.type);
+
+    // Dot color mode
+    if (state.dotsOptions.gradient) {
+      document.getElementById('dot-gradient').checked = true;
+      document.getElementById('dot-solid-controls').style.display = 'none';
+      document.getElementById('dot-gradient-controls').style.display = '';
+      // Gradient type
+      if (state.dotsOptions.gradient.type === 'radial') {
+        document.getElementById('grad-radial').checked = true;
+        document.getElementById('grad-rotation-row').style.display = 'none';
+      } else {
+        document.getElementById('grad-linear').checked = true;
+        document.getElementById('grad-rotation-row').style.display = '';
+      }
+      // Gradient rotation
+      var rotDeg = Math.round((state.dotsOptions.gradient.rotation || 0) * 180 / Math.PI);
+      document.getElementById('grad-rotation').value = rotDeg;
+      document.getElementById('grad-rotation-val').innerHTML = rotDeg + '&deg;';
+      // Gradient colors
+      if (state.dotsOptions.gradient.colorStops && state.dotsOptions.gradient.colorStops.length >= 2) {
+        syncColorPicker('grad-color1', 'grad-color1-hex', 'grad-color1-swatch', state.dotsOptions.gradient.colorStops[0].color);
+        syncColorPicker('grad-color2', 'grad-color2-hex', 'grad-color2-swatch', state.dotsOptions.gradient.colorStops[1].color);
+      }
+    } else {
+      document.getElementById('dot-solid').checked = true;
+      document.getElementById('dot-solid-controls').style.display = '';
+      document.getElementById('dot-gradient-controls').style.display = 'none';
+      syncColorPicker('dot-color', 'dot-color-hex', 'dot-color-swatch', state.dotsOptions.color || '#4fc3f7');
+    }
+
+    // Corner squares
+    syncStyleGrid('corner-sq-style-grid', state.cornersSquareOptions.type);
+    syncColorPicker('corner-sq-color', 'corner-sq-color-hex', 'corner-sq-color-swatch', state.cornersSquareOptions.color || '#4fc3f7');
+
+    // Corner dots
+    syncStyleGrid('corner-dot-style-grid', state.cornersDotOptions.type);
+    syncColorPicker('corner-dot-color', 'corner-dot-color-hex', 'corner-dot-color-swatch', state.cornersDotOptions.color || '#4fc3f7');
+
+    // Background
+    var bgColor = state.backgroundOptions.color;
+    var isTransparent = bgColor === 'transparent';
+    document.getElementById('bg-transparent').checked = isTransparent;
+    var preview = document.getElementById('qr-preview');
+    if (isTransparent) {
+      preview.classList.add('transparent-mode');
+      document.getElementById('bg-color-row').classList.add('disabled');
+    } else {
+      preview.classList.remove('transparent-mode');
+      document.getElementById('bg-color-row').classList.remove('disabled');
+      syncColorPicker('bg-color', 'bg-color-hex', 'bg-color-swatch', bgColor);
+    }
+
+    // Logo
+    var dropZone = document.getElementById('logo-drop-zone');
+    var previewRow = document.getElementById('logo-preview-row');
+    if (state.image) {
+      document.getElementById('logo-preview-thumb').src = state.image;
+      previewRow.classList.add('visible');
+      dropZone.style.display = 'none';
+    } else {
+      previewRow.classList.remove('visible');
+      dropZone.style.display = '';
+    }
+    document.getElementById('logo-size').value = Math.round(state.imageOptions.imageSize * 100);
+    document.getElementById('logo-size-val').textContent = state.imageOptions.imageSize.toFixed(2);
+    document.getElementById('logo-margin').value = state.imageOptions.margin;
+    document.getElementById('logo-margin-val').textContent = state.imageOptions.margin;
+    document.getElementById('logo-hide-dots').checked = state.imageOptions.hideBackgroundDots;
+  }
+
+  function syncColorPicker(pickerId, hexId, swatchId, color) {
+    var picker = document.getElementById(pickerId);
+    var hex = document.getElementById(hexId);
+    var swatch = document.getElementById(swatchId);
+    if (picker) picker.value = color;
+    if (hex) hex.value = color.toUpperCase();
+    if (swatch) swatch.style.background = color;
+  }
+
+  function syncStyleGrid(gridId, activeStyle) {
+    var grid = document.getElementById(gridId);
+    if (!grid) return;
+    grid.querySelectorAll('.style-tile').forEach(function(t) {
+      t.classList.toggle('active', t.dataset.style === activeStyle);
+    });
+  }
 
   // ============================================
   // HELPERS
@@ -1146,6 +2116,52 @@ details[open] > summary .chevron {
     return /^#[0-9a-fA-F]{6}$/.test(val);
   }
 
+  // ============================================
+  // TOAST NOTIFICATIONS
+  // ============================================
+  function showToast(message, type) {
+    type = type || 'info';
+    var container = document.getElementById('toast-container');
+    var toast = document.createElement('div');
+    toast.className = 'toast toast-' + type;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(function() {
+      if (toast.parentNode) toast.parentNode.removeChild(toast);
+    }, 2200);
+  }
+
+  // ============================================
+  // MODAL SYSTEM
+  // ============================================
+  function openModal(title, bodyHTML) {
+    closeModal();
+    var overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.id = 'modal-overlay';
+    overlay.innerHTML =
+      '<div class="modal-content">' +
+        '<div class="modal-header">' +
+          '<div class="modal-title">' + title + '</div>' +
+          '<button class="modal-close" id="modal-close-btn">&times;</button>' +
+        '</div>' +
+        '<div class="modal-body">' + bodyHTML + '</div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) closeModal();
+    });
+    document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+  }
+
+  function closeModal() {
+    var existing = document.getElementById('modal-overlay');
+    if (existing) existing.parentNode.removeChild(existing);
+  }
+
+  // ============================================
+  // BUILD QR OPTIONS
+  // ============================================
   function buildOptions() {
     var opts = {
       width: state.width,
@@ -1155,33 +2171,17 @@ details[open] > summary .chevron {
       data: state.data || 'https://example.com',
       qrOptions: { errorCorrectionLevel: state.qrOptions.errorCorrectionLevel },
       dotsOptions: {},
-      cornersSquareOptions: {
-        type: state.cornersSquareOptions.type,
-        color: state.cornersSquareOptions.color
-      },
-      cornersDotOptions: {
-        type: state.cornersDotOptions.type,
-        color: state.cornersDotOptions.color
-      },
-      backgroundOptions: {
-        color: state.backgroundOptions.color
-      }
+      cornersSquareOptions: { type: state.cornersSquareOptions.type, color: state.cornersSquareOptions.color },
+      cornersDotOptions: { type: state.cornersDotOptions.type, color: state.cornersDotOptions.color },
+      backgroundOptions: { color: state.backgroundOptions.color }
     };
 
-    // Dot options: solid or gradient
     if (state.dotsOptions.gradient) {
-      opts.dotsOptions = {
-        type: state.dotsOptions.type,
-        gradient: JSON.parse(JSON.stringify(state.dotsOptions.gradient))
-      };
+      opts.dotsOptions = { type: state.dotsOptions.type, gradient: deepClone(state.dotsOptions.gradient) };
     } else {
-      opts.dotsOptions = {
-        type: state.dotsOptions.type,
-        color: state.dotsOptions.color
-      };
+      opts.dotsOptions = { type: state.dotsOptions.type, color: state.dotsOptions.color };
     }
 
-    // Image / logo
     if (state.image) {
       opts.image = state.image;
       opts.imageOptions = {
@@ -1206,16 +2206,142 @@ details[open] > summary .chevron {
   }
 
   function forceUpdate() {
-    if (!qrCode) return;
-    // Recreate for guaranteed fresh render
     var container = document.getElementById('qr-preview');
     container.innerHTML = '';
     qrCode = new QRCodeStyling(buildOptions());
     qrCode.append(container);
+    updateReadability();
   }
 
-  var debouncedUpdate = debounce(forceUpdate, 80);
-  var slowUpdate = debounce(forceUpdate, 300);
+  var debouncedUpdate = debounce(function() { forceUpdate(); autoSave(); }, 80);
+  var slowUpdate = debounce(function() { forceUpdate(); autoSave(); }, 300);
+
+  // ============================================
+  // SAVE / LOAD CONFIG
+  // ============================================
+  function getExportState() {
+    var s = deepClone(state);
+    delete s.image; // Don't export large data URLs
+    return s;
+  }
+
+  function saveConfig() {
+    var json = JSON.stringify(getExportState(), null, 2);
+    var blob = new Blob([json], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'qr-studio-config.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Config saved', 'success');
+  }
+
+  function loadConfig() {
+    document.getElementById('config-file-input').click();
+  }
+
+  function handleConfigFile(file) {
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        var parsed = JSON.parse(e.target.result);
+        pushUndo();
+        deserializeState(parsed);
+        syncUIFromState();
+        forceUpdate();
+        autoSave();
+        showToast('Config loaded', 'success');
+      } catch (err) {
+        showToast('Invalid config file', 'error');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  // ============================================
+  // AUTO-SAVE / RESTORE
+  // ============================================
+  var autoSave = debounce(function() {
+    try {
+      var s = getExportState();
+      localStorage.setItem('qr-studio-autosave', JSON.stringify(s));
+    } catch (e) { /* quota exceeded, ignore */ }
+  }, 1000);
+
+  function tryRestore() {
+    try {
+      var saved = localStorage.getItem('qr-studio-autosave');
+      if (saved) {
+        var parsed = JSON.parse(saved);
+        deserializeState(parsed);
+        syncUIFromState();
+        forceUpdate();
+        showToast('Session restored', 'info');
+        return true;
+      }
+    } catch (e) { /* corrupt data, ignore */ }
+    return false;
+  }
+
+  // ============================================
+  // COPY TO CLIPBOARD
+  // ============================================
+  function copyToClipboard() {
+    var canvas = document.querySelector('#qr-preview canvas');
+    if (!canvas) { showToast('No QR to copy', 'error'); return; }
+    canvas.toBlob(function(blob) {
+      if (!blob) { showToast('Copy failed', 'error'); return; }
+      if (navigator.clipboard && navigator.clipboard.write) {
+        navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]).then(function() {
+          showToast('Copied to clipboard', 'success');
+        }).catch(function() {
+          showToast('Copy failed — try downloading', 'error');
+        });
+      } else {
+        showToast('Clipboard not supported in this browser', 'error');
+      }
+    }, 'image/png');
+  }
+
+  // ============================================
+  // KEYBOARD SHORTCUTS
+  // ============================================
+  function showShortcutsModal() {
+    openModal('Keyboard Shortcuts',
+      '<table class="shortcuts-table">' +
+      '<tr><td>Undo</td><td><span class="kbd">Ctrl</span> + <span class="kbd">Z</span></td></tr>' +
+      '<tr><td>Redo</td><td><span class="kbd">Ctrl</span> + <span class="kbd">Y</span></td></tr>' +
+      '<tr><td>Save Config</td><td><span class="kbd">Ctrl</span> + <span class="kbd">S</span></td></tr>' +
+      '<tr><td>Copy PNG</td><td><span class="kbd">Ctrl</span> + <span class="kbd">Shift</span> + <span class="kbd">C</span></td></tr>' +
+      '<tr><td>Export PNG</td><td><span class="kbd">Ctrl</span> + <span class="kbd">E</span></td></tr>' +
+      '<tr><td>Export SVG</td><td><span class="kbd">Ctrl</span> + <span class="kbd">Shift</span> + <span class="kbd">E</span></td></tr>' +
+      '<tr><td>Shortcuts</td><td><span class="kbd">?</span></td></tr>' +
+      '</table>'
+    );
+  }
+
+  function handleKeyboard(e) {
+    // Don't capture when typing in inputs
+    var tag = e.target.tagName;
+    var isInput = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
+
+    if (e.ctrlKey && e.key === 'z') { e.preventDefault(); undo(); return; }
+    if (e.ctrlKey && e.key === 'y') { e.preventDefault(); redo(); return; }
+    if (e.ctrlKey && e.shiftKey && e.key === 'Z') { e.preventDefault(); redo(); return; }
+    if (e.ctrlKey && e.key === 's') { e.preventDefault(); saveConfig(); return; }
+    if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) { e.preventDefault(); copyToClipboard(); return; }
+    if (e.ctrlKey && e.shiftKey && (e.key === 'E' || e.key === 'e')) {
+      e.preventDefault();
+      document.getElementById('download-svg').click();
+      return;
+    }
+    if (e.ctrlKey && e.key === 'e') { e.preventDefault(); document.getElementById('download-png').click(); return; }
+
+    if (!isInput && e.key === '?') { showShortcutsModal(); return; }
+    if (e.key === 'Escape') { closeModal(); return; }
+  }
 
   // ============================================
   // THEME TOGGLE
@@ -1248,10 +2374,14 @@ details[open] > summary .chevron {
       onChange(val);
     });
 
+    // Push undo on committed color change
+    picker.addEventListener('change', function() { pushUndo(); });
+
     hex.addEventListener('change', function() {
       var val = hex.value.trim();
       if (!val.startsWith('#')) val = '#' + val;
       if (isValidHex(val)) {
+        pushUndo();
         picker.value = val;
         hex.value = val.toUpperCase();
         swatch.style.background = val;
@@ -1270,6 +2400,7 @@ details[open] > summary .chevron {
     grid.addEventListener('click', function(e) {
       var tile = e.target.closest('.style-tile');
       if (!tile) return;
+      pushUndo();
       grid.querySelectorAll('.style-tile').forEach(function(t) { t.classList.remove('active'); });
       tile.classList.add('active');
       onSelect(tile.dataset.style);
@@ -1286,6 +2417,7 @@ details[open] > summary .chevron {
       state.data = dataInput.value;
       slowUpdate();
     });
+    dataInput.addEventListener('change', function() { pushUndo(); });
 
     // --- Size ---
     var sizeSlider = document.getElementById('qr-size');
@@ -1297,6 +2429,7 @@ details[open] > summary .chevron {
       sizeVal.textContent = v + 'px';
       debouncedUpdate();
     });
+    sizeSlider.addEventListener('change', function() { pushUndo(); });
 
     // --- Margin ---
     var marginSlider = document.getElementById('qr-margin');
@@ -1306,12 +2439,15 @@ details[open] > summary .chevron {
       marginVal.textContent = marginSlider.value;
       debouncedUpdate();
     });
+    marginSlider.addEventListener('change', function() { pushUndo(); });
 
     // --- Error Correction ---
     document.querySelectorAll('input[name="ec"]').forEach(function(radio) {
       radio.addEventListener('change', function() {
+        pushUndo();
         state.qrOptions.errorCorrectionLevel = radio.value;
         forceUpdate();
+        autoSave();
       });
     });
 
@@ -1319,11 +2455,13 @@ details[open] > summary .chevron {
     bindStyleGrid('dot-style-grid', function(style) {
       state.dotsOptions.type = style;
       forceUpdate();
+      autoSave();
     });
 
     // --- Dot Color Mode ---
     document.querySelectorAll('input[name="dot-color-mode"]').forEach(function(radio) {
       radio.addEventListener('change', function() {
+        pushUndo();
         if (radio.value === 'solid') {
           state.dotsOptions.gradient = null;
           state.dotsOptions.color = document.getElementById('dot-color').value;
@@ -1343,26 +2481,26 @@ details[open] > summary .chevron {
           document.getElementById('dot-gradient-controls').style.display = '';
         }
         forceUpdate();
+        autoSave();
       });
     });
 
     // --- Dot Solid Color ---
     bindColorPicker('dot-color', 'dot-color-hex', 'dot-color-swatch', function(val) {
-      if (!state.dotsOptions.gradient) {
-        state.dotsOptions.color = val;
-      }
+      if (!state.dotsOptions.gradient) state.dotsOptions.color = val;
       debouncedUpdate();
     });
 
     // --- Gradient Type ---
     document.querySelectorAll('input[name="grad-type"]').forEach(function(radio) {
       radio.addEventListener('change', function() {
+        pushUndo();
         if (state.dotsOptions.gradient) {
           state.dotsOptions.gradient.type = radio.value;
-          document.getElementById('grad-rotation-row').style.display =
-            radio.value === 'radial' ? 'none' : '';
+          document.getElementById('grad-rotation-row').style.display = radio.value === 'radial' ? 'none' : '';
         }
         forceUpdate();
+        autoSave();
       });
     });
 
@@ -1372,24 +2510,18 @@ details[open] > summary .chevron {
     gradRotation.addEventListener('input', function() {
       var deg = parseInt(gradRotation.value);
       gradRotationVal.innerHTML = deg + '&deg;';
-      if (state.dotsOptions.gradient) {
-        state.dotsOptions.gradient.rotation = (deg * Math.PI) / 180;
-      }
+      if (state.dotsOptions.gradient) state.dotsOptions.gradient.rotation = (deg * Math.PI) / 180;
       debouncedUpdate();
     });
+    gradRotation.addEventListener('change', function() { pushUndo(); });
 
     // --- Gradient Colors ---
     bindColorPicker('grad-color1', 'grad-color1-hex', 'grad-color1-swatch', function(val) {
-      if (state.dotsOptions.gradient) {
-        state.dotsOptions.gradient.colorStops[0].color = val;
-      }
+      if (state.dotsOptions.gradient) state.dotsOptions.gradient.colorStops[0].color = val;
       debouncedUpdate();
     });
-
     bindColorPicker('grad-color2', 'grad-color2-hex', 'grad-color2-swatch', function(val) {
-      if (state.dotsOptions.gradient) {
-        state.dotsOptions.gradient.colorStops[1].color = val;
-      }
+      if (state.dotsOptions.gradient) state.dotsOptions.gradient.colorStops[1].color = val;
       debouncedUpdate();
     });
 
@@ -1397,8 +2529,8 @@ details[open] > summary .chevron {
     bindStyleGrid('corner-sq-style-grid', function(style) {
       state.cornersSquareOptions.type = style;
       forceUpdate();
+      autoSave();
     });
-
     bindColorPicker('corner-sq-color', 'corner-sq-color-hex', 'corner-sq-color-swatch', function(val) {
       state.cornersSquareOptions.color = val;
       debouncedUpdate();
@@ -1408,8 +2540,8 @@ details[open] > summary .chevron {
     bindStyleGrid('corner-dot-style-grid', function(style) {
       state.cornersDotOptions.type = style;
       forceUpdate();
+      autoSave();
     });
-
     bindColorPicker('corner-dot-color', 'corner-dot-color-hex', 'corner-dot-color-swatch', function(val) {
       state.cornersDotOptions.color = val;
       debouncedUpdate();
@@ -1418,6 +2550,7 @@ details[open] > summary .chevron {
     // --- Background Transparent ---
     var bgTransparent = document.getElementById('bg-transparent');
     bgTransparent.addEventListener('change', function() {
+      pushUndo();
       var preview = document.getElementById('qr-preview');
       if (bgTransparent.checked) {
         state.backgroundOptions.color = 'transparent';
@@ -1430,13 +2563,12 @@ details[open] > summary .chevron {
         document.getElementById('bg-color-row').classList.remove('disabled');
       }
       forceUpdate();
+      autoSave();
     });
 
     // --- Background Color ---
     bindColorPicker('bg-color', 'bg-color-hex', 'bg-color-swatch', function(val) {
-      if (!bgTransparent.checked) {
-        state.backgroundOptions.color = val;
-      }
+      if (!bgTransparent.checked) state.backgroundOptions.color = val;
       debouncedUpdate();
     });
 
@@ -1451,43 +2583,32 @@ details[open] > summary .chevron {
       if (!file || !file.type.startsWith('image/')) return;
       var reader = new FileReader();
       reader.onload = function(e) {
+        pushUndo();
         state.image = e.target.result;
         previewThumb.src = e.target.result;
         previewInfo.textContent = file.name;
         previewRow.classList.add('visible');
         dropZone.style.display = 'none';
         forceUpdate();
+        autoSave();
       };
       reader.readAsDataURL(file);
     }
 
     dropZone.addEventListener('click', function() { fileInput.click(); });
-
-    dropZone.addEventListener('dragover', function(e) {
-      e.preventDefault();
-      dropZone.classList.add('drag-over');
-    });
-
-    dropZone.addEventListener('dragleave', function() {
-      dropZone.classList.remove('drag-over');
-    });
-
-    dropZone.addEventListener('drop', function(e) {
-      e.preventDefault();
-      dropZone.classList.remove('drag-over');
-      handleLogoFile(e.dataTransfer.files[0]);
-    });
-
-    fileInput.addEventListener('change', function() {
-      handleLogoFile(fileInput.files[0]);
-    });
+    dropZone.addEventListener('dragover', function(e) { e.preventDefault(); dropZone.classList.add('drag-over'); });
+    dropZone.addEventListener('dragleave', function() { dropZone.classList.remove('drag-over'); });
+    dropZone.addEventListener('drop', function(e) { e.preventDefault(); dropZone.classList.remove('drag-over'); handleLogoFile(e.dataTransfer.files[0]); });
+    fileInput.addEventListener('change', function() { handleLogoFile(fileInput.files[0]); });
 
     document.getElementById('remove-logo').addEventListener('click', function() {
+      pushUndo();
       state.image = '';
       fileInput.value = '';
       previewRow.classList.remove('visible');
       dropZone.style.display = '';
       forceUpdate();
+      autoSave();
     });
 
     // --- Logo Size ---
@@ -1499,6 +2620,7 @@ details[open] > summary .chevron {
       logoSizeVal.textContent = v.toFixed(2);
       debouncedUpdate();
     });
+    logoSize.addEventListener('change', function() { pushUndo(); });
 
     // --- Logo Margin ---
     var logoMargin = document.getElementById('logo-margin');
@@ -1508,27 +2630,903 @@ details[open] > summary .chevron {
       logoMarginVal.textContent = logoMargin.value;
       debouncedUpdate();
     });
+    logoMargin.addEventListener('change', function() { pushUndo(); });
 
     // --- Logo Hide Dots ---
     document.getElementById('logo-hide-dots').addEventListener('change', function() {
+      pushUndo();
       state.imageOptions.hideBackgroundDots = this.checked;
       forceUpdate();
+      autoSave();
     });
 
-    // --- Export PNG ---
+    // --- Copy PNG ---
+    document.getElementById('copy-png').addEventListener('click', copyToClipboard);
+
+    // --- Header Toolbar ---
+    document.getElementById('btn-undo').addEventListener('click', undo);
+    document.getElementById('btn-redo').addEventListener('click', redo);
+    document.getElementById('btn-save').addEventListener('click', saveConfig);
+    document.getElementById('btn-load').addEventListener('click', loadConfig);
+    document.getElementById('btn-shortcuts').addEventListener('click', showShortcutsModal);
+    document.getElementById('btn-scanner').addEventListener('click', openScanner);
+    document.getElementById('config-file-input').addEventListener('change', function() {
+      handleConfigFile(this.files[0]);
+      this.value = '';
+    });
+
+    // --- Keyboard Shortcuts ---
+    document.addEventListener('keydown', handleKeyboard);
+
+    // --- Data Type Tabs ---
+    bindDataTypes();
+
+    // --- Templates ---
+    initTemplates();
+
+    // --- Export Dropdown ---
+    bindExportDropdown();
+
+    // --- Batch Mode ---
+    document.getElementById('btn-batch').addEventListener('click', openBatchMode);
+
+    // --- Animation Toggle ---
+    bindAnimToggle();
+
+    // --- Color Harmony ---
+    bindColorHarmony();
+
+    // --- Readability ---
+    updateReadability();
+  }
+
+  // ============================================
+  // DATA TYPE SYSTEM
+  // ============================================
+  var currentDataType = 'url';
+  var dataFields = {};
+
+  var DATA_TYPES = {
+    url: {
+      fields: [{ id: 'url', label: 'URL', placeholder: 'https://example.com', type: 'text' }],
+      format: function(f) { return f.url || ''; }
+    },
+    text: {
+      fields: [{ id: 'text', label: 'Text', placeholder: 'Enter any text...', type: 'textarea' }],
+      format: function(f) { return f.text || ''; }
+    },
+    wifi: {
+      fields: [
+        { id: 'ssid', label: 'Network Name (SSID)', placeholder: 'MyWiFi', type: 'text' },
+        { id: 'password', label: 'Password', placeholder: 'password123', type: 'text' },
+        { id: 'encryption', label: 'Encryption', type: 'select', options: ['WPA', 'WEP', 'nopass'] }
+      ],
+      format: function(f) {
+        var enc = f.encryption || 'WPA';
+        return 'WIFI:T:' + enc + ';S:' + (f.ssid || '') + ';P:' + (f.password || '') + ';;';
+      }
+    },
+    vcard: {
+      fields: [
+        { id: 'firstName', label: 'First Name', placeholder: 'John', type: 'text' },
+        { id: 'lastName', label: 'Last Name', placeholder: 'Doe', type: 'text' },
+        { id: 'phone', label: 'Phone', placeholder: '+1234567890', type: 'text' },
+        { id: 'email', label: 'Email', placeholder: 'john@example.com', type: 'text' },
+        { id: 'org', label: 'Organization', placeholder: 'Company', type: 'text' },
+        { id: 'url', label: 'Website', placeholder: 'https://example.com', type: 'text' }
+      ],
+      format: function(f) {
+        return 'BEGIN:VCARD\nVERSION:3.0\nN:' + (f.lastName || '') + ';' + (f.firstName || '') +
+          '\nFN:' + (f.firstName || '') + ' ' + (f.lastName || '') +
+          (f.phone ? '\nTEL:' + f.phone : '') +
+          (f.email ? '\nEMAIL:' + f.email : '') +
+          (f.org ? '\nORG:' + f.org : '') +
+          (f.url ? '\nURL:' + f.url : '') +
+          '\nEND:VCARD';
+      }
+    },
+    email: {
+      fields: [
+        { id: 'to', label: 'To', placeholder: 'recipient@example.com', type: 'text' },
+        { id: 'subject', label: 'Subject', placeholder: 'Hello', type: 'text' },
+        { id: 'body', label: 'Message', placeholder: 'Your message...', type: 'textarea' }
+      ],
+      format: function(f) {
+        var parts = [];
+        if (f.subject) parts.push('subject=' + encodeURIComponent(f.subject));
+        if (f.body) parts.push('body=' + encodeURIComponent(f.body));
+        return 'mailto:' + (f.to || '') + (parts.length ? '?' + parts.join('&') : '');
+      }
+    },
+    sms: {
+      fields: [
+        { id: 'phone', label: 'Phone Number', placeholder: '+1234567890', type: 'text' },
+        { id: 'message', label: 'Message', placeholder: 'Hello!', type: 'textarea' }
+      ],
+      format: function(f) { return 'smsto:' + (f.phone || '') + ':' + (f.message || ''); }
+    },
+    phone: {
+      fields: [{ id: 'phone', label: 'Phone Number', placeholder: '+1234567890', type: 'text' }],
+      format: function(f) { return 'tel:' + (f.phone || ''); }
+    },
+    geo: {
+      fields: [
+        { id: 'lat', label: 'Latitude', placeholder: '40.7128', type: 'text' },
+        { id: 'lon', label: 'Longitude', placeholder: '-74.0060', type: 'text' }
+      ],
+      format: function(f) { return 'geo:' + (f.lat || '0') + ',' + (f.lon || '0'); }
+    }
+  };
+
+  function renderDataTypeForm(type) {
+    var config = DATA_TYPES[type];
+    if (!config) return;
+    currentDataType = type;
+    dataFields = {};
+
+    // Update active tab
+    document.querySelectorAll('.data-type-tab').forEach(function(t) {
+      t.classList.toggle('active', t.dataset.type === type);
+    });
+
+    var container = document.getElementById('data-type-form-container');
+    var html = '<div class="data-type-form">';
+    config.fields.forEach(function(field) {
+      html += '<div class="field-row">';
+      if (config.fields.length > 1) html += '<label class="field-label">' + field.label + '</label>';
+      if (field.type === 'textarea') {
+        html += '<textarea class="control-input" data-field="' + field.id + '" placeholder="' + (field.placeholder || '') + '" rows="3"></textarea>';
+      } else if (field.type === 'select') {
+        html += '<select class="control-input" data-field="' + field.id + '">';
+        field.options.forEach(function(opt) {
+          html += '<option value="' + opt + '">' + opt + '</option>';
+        });
+        html += '</select>';
+      } else {
+        html += '<input type="text" class="control-input" data-field="' + field.id + '" placeholder="' + (field.placeholder || '') + '">';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+    container.innerHTML = html;
+
+    // Bind field changes
+    container.querySelectorAll('[data-field]').forEach(function(el) {
+      var fieldId = el.dataset.field;
+      el.addEventListener('input', function() {
+        dataFields[fieldId] = el.value;
+        state.data = config.format(dataFields);
+        slowUpdate();
+      });
+      el.addEventListener('change', function() { pushUndo(); });
+    });
+
+    // Set initial data if switching from URL type with existing value
+    if (type === 'url' && state.data && !state.data.startsWith('WIFI:') && !state.data.startsWith('BEGIN:') && !state.data.startsWith('mailto:') && !state.data.startsWith('tel:') && !state.data.startsWith('smsto:') && !state.data.startsWith('geo:')) {
+      var input = container.querySelector('[data-field="url"]');
+      if (input) { input.value = state.data; dataFields.url = state.data; }
+    }
+  }
+
+  function bindDataTypes() {
+    document.getElementById('data-type-tabs').addEventListener('click', function(e) {
+      var tab = e.target.closest('.data-type-tab');
+      if (!tab) return;
+      pushUndo();
+      renderDataTypeForm(tab.dataset.type);
+      // Reset data for new type
+      state.data = DATA_TYPES[tab.dataset.type].format(dataFields);
+      forceUpdate();
+      autoSave();
+    });
+
+    // Auto-detect hint
+    document.getElementById('data-type-form-container').addEventListener('input', function(e) {
+      if (currentDataType !== 'url' && currentDataType !== 'text') return;
+      var val = e.target.value || '';
+      var hint = document.getElementById('auto-detect-hint');
+      if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+        hint.textContent = 'Looks like an email — switch to Email mode?';
+        hint.style.display = 'block';
+        hint.onclick = function() { renderDataTypeForm('email'); var f = document.querySelector('[data-field="to"]'); if (f) { f.value = val; dataFields.to = val; state.data = DATA_TYPES.email.format(dataFields); forceUpdate(); } hint.style.display = 'none'; };
+      } else if (/^\+?[\d\s\-()]{7,}$/.test(val.trim())) {
+        hint.textContent = 'Looks like a phone — switch to Phone mode?';
+        hint.style.display = 'block';
+        hint.onclick = function() { renderDataTypeForm('phone'); var f = document.querySelector('[data-field="phone"]'); if (f) { f.value = val.trim(); dataFields.phone = val.trim(); state.data = DATA_TYPES.phone.format(dataFields); forceUpdate(); } hint.style.display = 'none'; };
+      } else {
+        hint.style.display = 'none';
+      }
+    });
+  }
+
+  // ============================================
+  // STYLE TEMPLATES
+  // ============================================
+  var TEMPLATES = [
+    { name: 'Default', config: { dotsOptions: { type: 'rounded', color: '#4fc3f7', gradient: null }, cornersSquareOptions: { type: 'extra-rounded', color: '#4fc3f7' }, cornersDotOptions: { type: 'dot', color: '#4fc3f7' }, backgroundOptions: { color: '#0d1117' } } },
+    { name: 'Corporate', config: { dotsOptions: { type: 'square', color: '#1a73e8', gradient: null }, cornersSquareOptions: { type: 'square', color: '#1a73e8' }, cornersDotOptions: { type: 'square', color: '#1a73e8' }, backgroundOptions: { color: '#ffffff' } } },
+    { name: 'Minimal', config: { dotsOptions: { type: 'square', color: '#000000', gradient: null }, cornersSquareOptions: { type: 'square', color: '#000000' }, cornersDotOptions: { type: 'square', color: '#000000' }, backgroundOptions: { color: '#ffffff' } } },
+    { name: 'Neon', config: { dotsOptions: { type: 'dots', color: '#00ff87', gradient: { type: 'linear', rotation: 0.785, colorStops: [{ offset: 0, color: '#00ff87' }, { offset: 1, color: '#60efff' }] } }, cornersSquareOptions: { type: 'dot', color: '#00ff87' }, cornersDotOptions: { type: 'dot', color: '#60efff' }, backgroundOptions: { color: '#0a0a0a' } } },
+    { name: 'Sunset', config: { dotsOptions: { type: 'rounded', color: '#ff6b35', gradient: { type: 'linear', rotation: 1.57, colorStops: [{ offset: 0, color: '#ff6b35' }, { offset: 1, color: '#f7c948' }] } }, cornersSquareOptions: { type: 'extra-rounded', color: '#ff6b35' }, cornersDotOptions: { type: 'dot', color: '#f7c948' }, backgroundOptions: { color: '#1a1a2e' } } },
+    { name: 'Ocean', config: { dotsOptions: { type: 'extra-rounded', color: '#0077b6', gradient: { type: 'linear', rotation: 2.36, colorStops: [{ offset: 0, color: '#0077b6' }, { offset: 1, color: '#00b4d8' }] } }, cornersSquareOptions: { type: 'dot', color: '#0077b6' }, cornersDotOptions: { type: 'dot', color: '#00b4d8' }, backgroundOptions: { color: '#ffffff' } } },
+    { name: 'Forest', config: { dotsOptions: { type: 'classy-rounded', color: '#2d6a4f', gradient: null }, cornersSquareOptions: { type: 'extra-rounded', color: '#2d6a4f' }, cornersDotOptions: { type: 'dot', color: '#52b788' }, backgroundOptions: { color: '#f0f7f4' } } },
+    { name: 'Royal', config: { dotsOptions: { type: 'dots', color: '#7b2cbf', gradient: { type: 'radial', rotation: 0, colorStops: [{ offset: 0, color: '#7b2cbf' }, { offset: 1, color: '#c77dff' }] } }, cornersSquareOptions: { type: 'dot', color: '#7b2cbf' }, cornersDotOptions: { type: 'dot', color: '#c77dff' }, backgroundOptions: { color: '#10002b' } } },
+    { name: 'Coral', config: { dotsOptions: { type: 'rounded', color: '#ff6b6b', gradient: null }, cornersSquareOptions: { type: 'extra-rounded', color: '#ff6b6b' }, cornersDotOptions: { type: 'dot', color: '#ee5a24' }, backgroundOptions: { color: '#ffffff' } } },
+    { name: 'Cyber', config: { dotsOptions: { type: 'square', color: '#00f5d4', gradient: { type: 'linear', rotation: 0, colorStops: [{ offset: 0, color: '#00f5d4' }, { offset: 1, color: '#f15bb5' }] } }, cornersSquareOptions: { type: 'square', color: '#00f5d4' }, cornersDotOptions: { type: 'square', color: '#f15bb5' }, backgroundOptions: { color: '#000000' } } },
+    { name: 'Pastel', config: { dotsOptions: { type: 'extra-rounded', color: '#a2d2ff', gradient: null }, cornersSquareOptions: { type: 'dot', color: '#a2d2ff' }, cornersDotOptions: { type: 'dot', color: '#bde0fe' }, backgroundOptions: { color: '#fff5f5' } } },
+    { name: 'Gold', config: { dotsOptions: { type: 'classy', color: '#b8860b', gradient: { type: 'linear', rotation: 0.785, colorStops: [{ offset: 0, color: '#b8860b' }, { offset: 1, color: '#ffd700' }] } }, cornersSquareOptions: { type: 'extra-rounded', color: '#b8860b' }, cornersDotOptions: { type: 'dot', color: '#ffd700' }, backgroundOptions: { color: '#1a1a1a' } } },
+    { name: 'Mono Dark', config: { dotsOptions: { type: 'rounded', color: '#e0e0e0', gradient: null }, cornersSquareOptions: { type: 'extra-rounded', color: '#ffffff' }, cornersDotOptions: { type: 'dot', color: '#ffffff' }, backgroundOptions: { color: '#212121' } } },
+    { name: 'Cherry', config: { dotsOptions: { type: 'dots', color: '#d90429', gradient: null }, cornersSquareOptions: { type: 'dot', color: '#d90429' }, cornersDotOptions: { type: 'dot', color: '#ef233c' }, backgroundOptions: { color: '#fff0f3' } } },
+    { name: 'Arctic', config: { dotsOptions: { type: 'rounded', color: '#4361ee', gradient: { type: 'linear', rotation: 1.57, colorStops: [{ offset: 0, color: '#4361ee' }, { offset: 1, color: '#4cc9f0' }] } }, cornersSquareOptions: { type: 'extra-rounded', color: '#4361ee' }, cornersDotOptions: { type: 'dot', color: '#4cc9f0' }, backgroundOptions: { color: '#f8f9fa' } } }
+  ];
+
+  function initTemplates() {
+    var gallery = document.getElementById('template-gallery');
+    if (!gallery) return;
+
+    TEMPLATES.forEach(function(tmpl, idx) {
+      var card = document.createElement('div');
+      card.className = 'template-card' + (idx === 0 ? ' active' : '');
+      card.dataset.index = idx;
+
+      // Generate mini QR preview
+      var previewDiv = document.createElement('div');
+      previewDiv.style.cssText = 'width:56px;height:56px;margin:0 auto 4px;border-radius:4px;overflow:hidden';
+      card.appendChild(previewDiv);
+
+      var miniOpts = {
+        width: 56, height: 56, margin: 2, type: 'canvas', data: 'QR',
+        qrOptions: { errorCorrectionLevel: 'L' },
+        dotsOptions: deepClone(tmpl.config.dotsOptions),
+        cornersSquareOptions: deepClone(tmpl.config.cornersSquareOptions),
+        cornersDotOptions: deepClone(tmpl.config.cornersDotOptions),
+        backgroundOptions: deepClone(tmpl.config.backgroundOptions)
+      };
+      // Clean gradient for mini
+      if (miniOpts.dotsOptions.gradient === null) delete miniOpts.dotsOptions.gradient;
+      try { new QRCodeStyling(miniOpts).append(previewDiv); } catch(e) {}
+
+      // Color dots
+      var colors = document.createElement('div');
+      colors.className = 'template-colors';
+      var dotColor = tmpl.config.dotsOptions.color || (tmpl.config.dotsOptions.gradient ? tmpl.config.dotsOptions.gradient.colorStops[0].color : '#000');
+      var bgColor = tmpl.config.backgroundOptions.color;
+      [dotColor, tmpl.config.cornersSquareOptions.color, bgColor].forEach(function(c) {
+        var dot = document.createElement('span');
+        dot.className = 'template-color-dot';
+        dot.style.background = c;
+        colors.appendChild(dot);
+      });
+
+      var name = document.createElement('div');
+      name.className = 'template-card-name';
+      name.textContent = tmpl.name;
+
+      card.appendChild(name);
+      card.appendChild(colors);
+
+      card.addEventListener('click', function() {
+        applyTemplate(idx);
+        gallery.querySelectorAll('.template-card').forEach(function(c) { c.classList.remove('active'); });
+        card.classList.add('active');
+      });
+
+      gallery.appendChild(card);
+    });
+  }
+
+  // ============================================
+  // EXPORT DROPDOWN & EXTRA FORMATS
+  // ============================================
+  function bindExportDropdown() {
+    var btn = document.getElementById('export-main-btn');
+    var dropdown = document.getElementById('export-dropdown');
+
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      dropdown.classList.toggle('visible');
+    });
+
+    document.addEventListener('click', function() {
+      dropdown.classList.remove('visible');
+    });
+
+    dropdown.addEventListener('click', function(e) { e.stopPropagation(); });
+
+    // PNG
     document.getElementById('download-png').addEventListener('click', function() {
       if (!qrCode) return;
       qrCode.download({ name: 'qr-code', extension: 'png' });
+      dropdown.classList.remove('visible');
     });
 
-    // --- Export SVG ---
+    // SVG
     document.getElementById('download-svg').addEventListener('click', function() {
       if (!qrCode) return;
-      var svgOpts = buildOptions();
-      svgOpts.type = 'svg';
-      var svgQR = new QRCodeStyling(svgOpts);
-      svgQR.download({ name: 'qr-code', extension: 'svg' });
+      var svgOpts = buildOptions(); svgOpts.type = 'svg';
+      new QRCodeStyling(svgOpts).download({ name: 'qr-code', extension: 'svg' });
+      dropdown.classList.remove('visible');
     });
+
+    // JPEG
+    document.getElementById('download-jpeg').addEventListener('click', function() {
+      exportAsFormat('image/jpeg', 'qr-code.jpg');
+      dropdown.classList.remove('visible');
+    });
+
+    // WebP
+    document.getElementById('download-webp').addEventListener('click', function() {
+      exportAsFormat('image/webp', 'qr-code.webp');
+      dropdown.classList.remove('visible');
+    });
+
+    // Embed
+    document.getElementById('btn-embed').addEventListener('click', function() {
+      dropdown.classList.remove('visible');
+      showEmbedModal();
+    });
+
+    // Print
+    document.getElementById('btn-print').addEventListener('click', function() {
+      dropdown.classList.remove('visible');
+      window.print();
+    });
+
+    // Share (only if supported)
+    if (navigator.share) {
+      var shareBtn = document.createElement('button');
+      shareBtn.textContent = 'Share...';
+      shareBtn.addEventListener('click', function() {
+        dropdown.classList.remove('visible');
+        shareQR();
+      });
+      dropdown.appendChild(shareBtn);
+    }
+  }
+
+  function exportAsFormat(mimeType, filename) {
+    var canvas = document.querySelector('#qr-preview canvas');
+    if (!canvas) return;
+    // For JPEG, composite on white background
+    if (mimeType === 'image/jpeg') {
+      var c = document.createElement('canvas');
+      c.width = canvas.width; c.height = canvas.height;
+      var ctx = c.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, c.width, c.height);
+      ctx.drawImage(canvas, 0, 0);
+      c.toBlob(function(blob) { downloadBlob(blob, filename); }, mimeType, 0.92);
+    } else {
+      canvas.toBlob(function(blob) { downloadBlob(blob, filename); }, mimeType, 0.92);
+    }
+  }
+
+  function downloadBlob(blob, filename) {
+    if (!blob) { showToast('Export failed', 'error'); return; }
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function showEmbedModal() {
+    var canvas = document.querySelector('#qr-preview canvas');
+    if (!canvas) return;
+    var dataUrl = canvas.toDataURL('image/png');
+    var size = state.width;
+    var imgTag = '<img src="' + dataUrl.substring(0, 60) + '..." alt="QR Code" width="' + size + '" height="' + size + '">';
+    openModal('Embed Code',
+      '<p style="margin-bottom:12px">Copy the embed code below:</p>' +
+      '<label class="field-label">HTML (Base64 Image)</label>' +
+      '<textarea class="batch-textarea" rows="3" id="embed-html" readonly style="font-size:0.7em;margin-bottom:12px">' +
+        '&lt;img src=&quot;' + dataUrl.replace(/&/g,'&amp;').replace(/"/g,'&quot;') + '&quot; alt=&quot;QR Code&quot; width=&quot;' + size + '&quot; height=&quot;' + size + '&quot;&gt;' +
+      '</textarea>' +
+      '<button class="btn btn-primary" id="embed-copy-btn" style="font-size:0.8em">Copy to Clipboard</button>'
+    );
+    document.getElementById('embed-copy-btn').addEventListener('click', function() {
+      var ta = document.getElementById('embed-html');
+      var text = ta.value.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&amp;/g,'&');
+      navigator.clipboard.writeText(text).then(function() { showToast('Copied', 'success'); });
+    });
+  }
+
+  function shareQR() {
+    var canvas = document.querySelector('#qr-preview canvas');
+    if (!canvas) return;
+    canvas.toBlob(function(blob) {
+      var file = new File([blob], 'qr-code.png', { type: 'image/png' });
+      navigator.share({ files: [file], title: 'QR Code' }).catch(function() {});
+    }, 'image/png');
+  }
+
+  // ============================================
+  // BATCH MODE
+  // ============================================
+  function openBatchMode() {
+    var overlay = document.createElement('div');
+    overlay.className = 'batch-overlay';
+    overlay.id = 'batch-overlay';
+    overlay.innerHTML =
+      '<div class="batch-panel">' +
+        '<div class="modal-header"><div class="modal-title">Batch Generation</div><button class="modal-close" id="batch-close">&times;</button></div>' +
+        '<p style="font-size:0.8em;color:var(--text-dim);margin-bottom:8px">Enter one URL per line. Current styling will be applied to all.</p>' +
+        '<textarea class="batch-textarea" id="batch-urls" placeholder="https://example.com/page1&#10;https://example.com/page2&#10;https://example.com/page3"></textarea>' +
+        '<div class="batch-progress" id="batch-progress" style="display:none"><div class="batch-progress-bar" id="batch-progress-bar"></div></div>' +
+        '<div style="display:flex;gap:8px;margin-top:12px">' +
+          '<button class="btn btn-primary" id="batch-generate" style="font-size:0.8em">Generate All</button>' +
+          '<button class="btn btn-secondary" id="batch-download-all" style="font-size:0.8em;display:none">Download All (ZIP)</button>' +
+        '</div>' +
+        '<div class="batch-grid" id="batch-grid"></div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+
+    document.getElementById('batch-close').addEventListener('click', closeBatchMode);
+    overlay.addEventListener('click', function(e) { if (e.target === overlay) closeBatchMode(); });
+    document.getElementById('batch-generate').addEventListener('click', runBatch);
+    document.getElementById('batch-download-all').addEventListener('click', downloadBatchZip);
+  }
+
+  function closeBatchMode() {
+    var el = document.getElementById('batch-overlay');
+    if (el) el.parentNode.removeChild(el);
+  }
+
+  var batchBlobs = [];
+
+  function runBatch() {
+    var text = document.getElementById('batch-urls').value.trim();
+    var urls = text.split('\n').map(function(s) { return s.trim(); }).filter(function(s) { return s.length > 0; });
+    if (urls.length === 0) { showToast('Enter at least one URL', 'error'); return; }
+    if (urls.length > 500) { showToast('Max 500 items', 'error'); return; }
+
+    var grid = document.getElementById('batch-grid');
+    grid.innerHTML = '';
+    batchBlobs = [];
+
+    var progress = document.getElementById('batch-progress');
+    var progressBar = document.getElementById('batch-progress-bar');
+    progress.style.display = '';
+    document.getElementById('batch-download-all').style.display = 'none';
+
+    var idx = 0;
+    function processNext() {
+      if (idx >= urls.length) {
+        document.getElementById('batch-download-all').style.display = '';
+        showToast('Generated ' + urls.length + ' QR codes', 'success');
+        return;
+      }
+      var url = urls[idx];
+      progressBar.style.width = ((idx + 1) / urls.length * 100) + '%';
+
+      var opts = buildOptions();
+      opts.data = url;
+      opts.width = 200;
+      opts.height = 200;
+
+      var item = document.createElement('div');
+      item.className = 'batch-item';
+      var container = document.createElement('div');
+      item.appendChild(container);
+      var label = document.createElement('div');
+      label.className = 'batch-item-label';
+      label.textContent = url.replace(/^https?:\/\//, '').substring(0, 25);
+      item.appendChild(label);
+      grid.appendChild(item);
+
+      var qr = new QRCodeStyling(opts);
+      qr.append(container);
+
+      // Extract blob after render
+      setTimeout(function() {
+        var c = container.querySelector('canvas');
+        if (c) {
+          c.toBlob(function(blob) {
+            batchBlobs.push({ name: 'qr-' + (idx + 1) + '.png', blob: blob });
+            idx++;
+            processNext();
+          }, 'image/png');
+        } else {
+          idx++;
+          processNext();
+        }
+      }, 100);
+    }
+    processNext();
+  }
+
+  function downloadBatchZip() {
+    if (batchBlobs.length === 0) return;
+    // Simple sequential download fallback (no JSZip dependency)
+    batchBlobs.forEach(function(item, i) {
+      setTimeout(function() {
+        downloadBlob(item.blob, item.name);
+      }, i * 200);
+    });
+    showToast('Downloading ' + batchBlobs.length + ' files', 'info');
+  }
+
+  // ============================================
+  // ANIMATION TOGGLE
+  // ============================================
+  function bindAnimToggle() {
+    document.getElementById('anim-toggles').addEventListener('click', function(e) {
+      var btn = e.target.closest('.anim-toggle-btn');
+      if (!btn) return;
+      var anim = btn.dataset.anim;
+      document.querySelectorAll('.anim-toggle-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var container = document.getElementById('qr-preview');
+      container.className = 'preview-container' + (anim !== 'none' ? ' anim-' + anim : '');
+      // Preserve transparent mode
+      if (state.backgroundOptions.color === 'transparent') container.classList.add('transparent-mode');
+    });
+  }
+
+  // ============================================
+  // READABILITY SCORE
+  // ============================================
+  function hexToRGB(hex) {
+    hex = hex.replace('#', '');
+    if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+    return { r: parseInt(hex.substring(0,2), 16), g: parseInt(hex.substring(2,4), 16), b: parseInt(hex.substring(4,6), 16) };
+  }
+
+  function relativeLuminance(rgb) {
+    var rs = rgb.r / 255, gs = rgb.g / 255, bs = rgb.b / 255;
+    var r = rs <= 0.03928 ? rs / 12.92 : Math.pow((rs + 0.055) / 1.055, 2.4);
+    var g = gs <= 0.03928 ? gs / 12.92 : Math.pow((gs + 0.055) / 1.055, 2.4);
+    var b = bs <= 0.03928 ? bs / 12.92 : Math.pow((bs + 0.055) / 1.055, 2.4);
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  }
+
+  function contrastRatio(hex1, hex2) {
+    var l1 = relativeLuminance(hexToRGB(hex1));
+    var l2 = relativeLuminance(hexToRGB(hex2));
+    var lighter = Math.max(l1, l2), darker = Math.min(l1, l2);
+    return (lighter + 0.05) / (darker + 0.05);
+  }
+
+  function updateReadability() {
+    var marker = document.getElementById('readability-marker');
+    var label = document.getElementById('readability-score');
+    if (!marker || !label) return;
+
+    var dotColor = state.dotsOptions.color || '#000000';
+    if (state.dotsOptions.gradient && state.dotsOptions.gradient.colorStops) {
+      dotColor = state.dotsOptions.gradient.colorStops[0].color;
+    }
+    var bgColor = state.backgroundOptions.color;
+    if (bgColor === 'transparent') bgColor = '#ffffff';
+
+    // Contrast score (40%)
+    var cr = contrastRatio(dotColor, bgColor);
+    var contrastScore = cr >= 7 ? 100 : cr >= 4.5 ? 75 : cr >= 3 ? 45 : 15;
+
+    // Logo coverage score (20%)
+    var logoScore = 100;
+    if (state.image) {
+      var coverage = state.imageOptions.imageSize * 100;
+      logoScore = coverage > 40 ? 10 : coverage > 30 ? 40 : coverage > 20 ? 70 : 100;
+    }
+
+    // Error correction score (25%)
+    var ecMap = { L: 40, M: 60, Q: 80, H: 100 };
+    var ecScore = ecMap[state.qrOptions.errorCorrectionLevel] || 80;
+
+    // Data density score (15%)
+    var dataLen = (state.data || '').length;
+    var densityScore = dataLen > 500 ? 20 : dataLen > 200 ? 50 : dataLen > 100 ? 70 : 100;
+
+    var total = Math.round(contrastScore * 0.4 + logoScore * 0.2 + ecScore * 0.25 + densityScore * 0.15);
+    total = Math.max(0, Math.min(100, total));
+
+    marker.style.left = total + '%';
+    if (total >= 75) {
+      label.textContent = total + ' — Excellent';
+      label.style.color = 'var(--success)';
+    } else if (total >= 50) {
+      label.textContent = total + ' — Good';
+      label.style.color = 'var(--accent)';
+    } else if (total >= 30) {
+      label.textContent = total + ' — Warning';
+      label.style.color = '#f7c948';
+    } else {
+      label.textContent = total + ' — Poor';
+      label.style.color = 'var(--danger)';
+    }
+  }
+
+  // ============================================
+  // COLOR HARMONY ENGINE
+  // ============================================
+  function hexToHSL(hex) {
+    var rgb = hexToRGB(hex);
+    var r = rgb.r / 255, g = rgb.g / 255, b = rgb.b / 255;
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var h = 0, s = 0, l = (max + min) / 2;
+    if (max !== min) {
+      var d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+      else if (max === g) h = ((b - r) / d + 2) / 6;
+      else h = ((r - g) / d + 4) / 6;
+    }
+    return { h: h * 360, s: s * 100, l: l * 100 };
+  }
+
+  function hslToHex(h, s, l) {
+    h = ((h % 360) + 360) % 360;
+    s = Math.max(0, Math.min(100, s)) / 100;
+    l = Math.max(0, Math.min(100, l)) / 100;
+    var c = (1 - Math.abs(2 * l - 1)) * s;
+    var x = c * (1 - Math.abs((h / 60) % 2 - 1));
+    var m = l - c / 2;
+    var r = 0, g = 0, b = 0;
+    if (h < 60) { r = c; g = x; }
+    else if (h < 120) { r = x; g = c; }
+    else if (h < 180) { g = c; b = x; }
+    else if (h < 240) { g = x; b = c; }
+    else if (h < 300) { r = x; b = c; }
+    else { r = c; b = x; }
+    var toHex = function(v) { var h = Math.round((v + m) * 255).toString(16); return h.length < 2 ? '0' + h : h; };
+    return '#' + toHex(r) + toHex(g) + toHex(b);
+  }
+
+  function generateHarmony(type) {
+    var dotColor = state.dotsOptions.color || '#4fc3f7';
+    if (state.dotsOptions.gradient && state.dotsOptions.gradient.colorStops) {
+      dotColor = state.dotsOptions.gradient.colorStops[0].color;
+    }
+    var hsl = hexToHSL(dotColor);
+    var colors = [];
+
+    if (type === 'complementary') {
+      colors = [
+        hslToHex(hsl.h, hsl.s, hsl.l),
+        hslToHex(hsl.h + 180, hsl.s, hsl.l),
+        hslToHex(hsl.h, hsl.s * 0.6, 92),
+        hslToHex(hsl.h + 180, hsl.s * 0.6, 12)
+      ];
+    } else if (type === 'analogous') {
+      colors = [
+        hslToHex(hsl.h - 30, hsl.s, hsl.l),
+        hslToHex(hsl.h, hsl.s, hsl.l),
+        hslToHex(hsl.h + 30, hsl.s, hsl.l),
+        hslToHex(hsl.h, hsl.s * 0.3, 93)
+      ];
+    } else if (type === 'triadic') {
+      colors = [
+        hslToHex(hsl.h, hsl.s, hsl.l),
+        hslToHex(hsl.h + 120, hsl.s, hsl.l),
+        hslToHex(hsl.h + 240, hsl.s, hsl.l),
+        hslToHex(hsl.h, hsl.s * 0.2, 10)
+      ];
+    } else if (type === 'split') {
+      colors = [
+        hslToHex(hsl.h, hsl.s, hsl.l),
+        hslToHex(hsl.h + 150, hsl.s, hsl.l),
+        hslToHex(hsl.h + 210, hsl.s, hsl.l),
+        hslToHex(hsl.h, hsl.s * 0.15, 95)
+      ];
+    } else { // random
+      var rh = Math.random() * 360;
+      var rs = 60 + Math.random() * 25;
+      var rl = 48 + Math.random() * 15;
+      colors = [
+        hslToHex(rh, rs, rl),
+        hslToHex(rh + 40, rs * 0.8, rl + 10),
+        hslToHex(rh + 180, rs * 0.7, rl),
+        hslToHex(rh, 8, Math.random() > 0.5 ? 95 : 8)
+      ];
+    }
+    return colors;
+  }
+
+  function bindColorHarmony() {
+    document.getElementById('harmony-pills').addEventListener('click', function(e) {
+      var pill = e.target.closest('.harmony-pill');
+      if (!pill) return;
+      var colors = generateHarmony(pill.dataset.harmony);
+      renderHarmonySwatches(colors);
+    });
+  }
+
+  function renderHarmonySwatches(colors) {
+    var container = document.getElementById('harmony-swatches');
+    container.innerHTML = '';
+    var labels = ['Dots', 'Corners', 'Corner Dots', 'Background'];
+    colors.forEach(function(color, i) {
+      var swatch = document.createElement('div');
+      swatch.className = 'harmony-swatch';
+      swatch.style.background = color;
+      swatch.title = labels[i] + ': ' + color;
+      container.appendChild(swatch);
+    });
+    // Add apply button
+    var applyBtn = document.createElement('button');
+    applyBtn.className = 'btn btn-primary';
+    applyBtn.style.cssText = 'font-size:0.7em;padding:6px 14px;margin-left:4px';
+    applyBtn.textContent = 'Apply';
+    applyBtn.addEventListener('click', function() {
+      pushUndo();
+      state.dotsOptions.gradient = null;
+      state.dotsOptions.color = colors[0];
+      state.cornersSquareOptions.color = colors[1];
+      state.cornersDotOptions.color = colors[2];
+      state.backgroundOptions.color = colors[3];
+      syncUIFromState();
+      forceUpdate();
+      autoSave();
+      showToast('Palette applied', 'success');
+    });
+    container.appendChild(applyBtn);
+  }
+
+  function applyTemplate(idx) {
+    var tmpl = TEMPLATES[idx];
+    if (!tmpl) return;
+    pushUndo();
+
+    // Apply template config while preserving data, size, margin, image
+    var savedData = state.data;
+    var savedWidth = state.width;
+    var savedHeight = state.height;
+    var savedMargin = state.margin;
+    var savedImage = state.image;
+    var savedImageOptions = deepClone(state.imageOptions);
+
+    state.dotsOptions = deepClone(tmpl.config.dotsOptions);
+    state.cornersSquareOptions = deepClone(tmpl.config.cornersSquareOptions);
+    state.cornersDotOptions = deepClone(tmpl.config.cornersDotOptions);
+    state.backgroundOptions = deepClone(tmpl.config.backgroundOptions);
+
+    state.data = savedData;
+    state.width = savedWidth;
+    state.height = savedHeight;
+    state.margin = savedMargin;
+    state.image = savedImage;
+    state.imageOptions = savedImageOptions;
+
+    syncUIFromState();
+    forceUpdate();
+    autoSave();
+    showToast('Applied: ' + tmpl.name, 'success');
+  }
+
+  // ============================================
+  // QR SCANNER
+  // ============================================
+  var scannerStream = null;
+  var scannerInterval = null;
+
+  function openScanner() {
+    var html =
+      '<div class="scanner-tabs">' +
+        '<button class="scanner-tab active" data-tab="camera">Camera</button>' +
+        '<button class="scanner-tab" data-tab="upload">Upload Image</button>' +
+      '</div>' +
+      '<div id="scanner-camera-panel">' +
+        '<div class="scanner-video-wrap"><video id="scanner-video" autoplay playsinline muted></video><div class="scanner-viewfinder"></div></div>' +
+        '<div class="scanner-result" id="scanner-result" style="display:none"></div>' +
+      '</div>' +
+      '<div id="scanner-upload-panel" style="display:none">' +
+        '<div class="logo-drop-zone" id="scanner-drop" style="margin-bottom:12px"><div class="upload-icon">&#8682;</div><p>Click or drop a QR image</p><input type="file" id="scanner-file" accept="image/*" style="display:none"></div>' +
+        '<canvas id="scanner-canvas" style="display:none"></canvas>' +
+        '<div class="scanner-result" id="scanner-upload-result" style="display:none"></div>' +
+      '</div>';
+
+    openModal('QR Scanner', html);
+
+    // Tab switching
+    document.querySelectorAll('.scanner-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.scanner-tab').forEach(function(t) { t.classList.remove('active'); });
+        tab.classList.add('active');
+        var isCamera = tab.dataset.tab === 'camera';
+        document.getElementById('scanner-camera-panel').style.display = isCamera ? '' : 'none';
+        document.getElementById('scanner-upload-panel').style.display = isCamera ? 'none' : '';
+        if (isCamera) startCameraScanner();
+        else stopCameraScanner();
+      });
+    });
+
+    // Upload tab
+    var dropZone = document.getElementById('scanner-drop');
+    var fileInput = document.getElementById('scanner-file');
+    dropZone.addEventListener('click', function() { fileInput.click(); });
+    dropZone.addEventListener('dragover', function(e) { e.preventDefault(); dropZone.classList.add('drag-over'); });
+    dropZone.addEventListener('dragleave', function() { dropZone.classList.remove('drag-over'); });
+    dropZone.addEventListener('drop', function(e) { e.preventDefault(); dropZone.classList.remove('drag-over'); scanImageFile(e.dataTransfer.files[0]); });
+    fileInput.addEventListener('change', function() { scanImageFile(fileInput.files[0]); });
+
+    // Override modal close to stop camera
+    var origClose = closeModal;
+    closeModal = function() {
+      stopCameraScanner();
+      origClose();
+      closeModal = origClose;
+    };
+
+    // Start camera
+    startCameraScanner();
+  }
+
+  function startCameraScanner() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      document.getElementById('scanner-result').style.display = 'block';
+      document.getElementById('scanner-result').textContent = 'Camera not available in this browser';
+      return;
+    }
+
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }).then(function(stream) {
+      scannerStream = stream;
+      var video = document.getElementById('scanner-video');
+      if (!video) return;
+      video.srcObject = stream;
+
+      // Use BarcodeDetector if available, else show message
+      if (window.BarcodeDetector) {
+        var detector = new BarcodeDetector({ formats: ['qr_code'] });
+        scannerInterval = setInterval(function() {
+          if (video.readyState < 2) return;
+          detector.detect(video).then(function(barcodes) {
+            if (barcodes.length > 0) {
+              showScanResult(barcodes[0].rawValue, 'scanner-result');
+            }
+          }).catch(function() {});
+        }, 300);
+      } else {
+        document.getElementById('scanner-result').style.display = 'block';
+        document.getElementById('scanner-result').innerHTML = 'BarcodeDetector not available. Try the <b>Upload</b> tab to scan an image, or use Chrome for camera scanning.';
+      }
+    }).catch(function(err) {
+      document.getElementById('scanner-result').style.display = 'block';
+      document.getElementById('scanner-result').textContent = 'Camera access denied: ' + err.message;
+    });
+  }
+
+  function stopCameraScanner() {
+    if (scannerInterval) { clearInterval(scannerInterval); scannerInterval = null; }
+    if (scannerStream) { scannerStream.getTracks().forEach(function(t) { t.stop(); }); scannerStream = null; }
+  }
+
+  function scanImageFile(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    var img = new Image();
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      img.onload = function() {
+        var canvas = document.getElementById('scanner-canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+
+        if (window.BarcodeDetector) {
+          var detector = new BarcodeDetector({ formats: ['qr_code'] });
+          detector.detect(canvas).then(function(barcodes) {
+            if (barcodes.length > 0) {
+              showScanResult(barcodes[0].rawValue, 'scanner-upload-result');
+            } else {
+              showScanResult('No QR code found in image', 'scanner-upload-result');
+            }
+          }).catch(function() {
+            showScanResult('Failed to scan image', 'scanner-upload-result');
+          });
+        } else {
+          showScanResult('BarcodeDetector not available in this browser. Try Chrome.', 'scanner-upload-result');
+        }
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function showScanResult(text, containerId) {
+    var el = document.getElementById(containerId);
+    el.style.display = 'block';
+    var isURL = /^https?:\/\//i.test(text);
+    el.innerHTML = '<strong>Decoded:</strong> ' + (isURL ? '<a href="' + text + '" target="_blank" rel="noopener" style="color:var(--accent)">' + text + '</a>' : text);
   }
 
   // ============================================
@@ -1536,8 +3534,11 @@ details[open] > summary .chevron {
   // ============================================
   document.addEventListener('DOMContentLoaded', function() {
     initTheme();
-    initQR();
+    if (!tryRestore()) {
+      initQR();
+    }
     bindControls();
+    updateUndoButtons();
   });
 
 })();
