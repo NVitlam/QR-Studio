@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+<style>
+/* ============================================
+   CSS RESET & VARIABLES — DARK THEME (default)
+   ============================================ */
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface-hover: #1c2129;
+  --border: rgba(255,255,255,0.06);
+  --border-active: rgba(79,195,247,0.3);
+  --text: #e6edf3;
+  --text-dim: #7d8590;
+  --text-muted: #484f58;
+  --accent: #4fc3f7;
+  --accent-dim: rgba(79,195,247,0.15);
+  --accent-glow: rgba(79,195,247,0.08);
+  --danger: #f85149;
+  --success: #3fb950;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --font-sans: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --checker-dark: #2a2f38;
+  --checker-bg: #1a1f27;
+  --preview-card-bg: rgba(22,27,34,0.5);
+  --scrollbar-thumb: var(--text-muted);
+  --btn-primary-text: #0d1117;
+}
+
+/* ============================================
+   LIGHT THEME
+   ============================================ */
+[data-theme="light"] {
+  --bg: #f6f8fa;
+  --surface: #ffffff;
+  --surface-hover: #f0f2f5;
+  --border: rgba(0,0,0,0.08);
+  --border-active: rgba(2,136,209,0.35);
+  --text: #1f2328;
+  --text-dim: #656d76;
+  --text-muted: #8b949e;
+  --accent: #0288d1;
+  --accent-dim: rgba(2,136,209,0.12);
+  --accent-glow: rgba(2,136,209,0.06);
+  --danger: #cf222e;
+  --success: #1a7f37;
+  --checker-dark: #e0e0e0;
+  --checker-bg: #f0f0f0;
+  --preview-card-bg: rgba(255,255,255,0.7);
+  --scrollbar-thumb: #c0c5cc;
+  --btn-primary-text: #ffffff;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.app-header {
+  height: 64px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: var(--surface);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-brand svg {
+  width: 32px;
+  height: 32px;
+}
+
+.app-title {
+  font-size: 1.1em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.app-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.65em;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+/* Theme Toggle */
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  transition: all 0.2s;
+  width: 40px;
+  height: 40px;
+}
+
+.theme-toggle:hover {
+  border-color: var(--text-muted);
+  color: var(--text);
+  background: var(--surface-hover);
+}
+
+.theme-toggle svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s;
+}
+
+.theme-toggle:hover svg {
+  transform: rotate(15deg);
+}
+
+.theme-toggle .icon-sun,
+.theme-toggle .icon-moon { display: none; }
+
+[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+
+/* ============================================
+   LAYOUT
+   ============================================ */
+.app-layout {
+  display: flex;
+  min-height: calc(100vh - 64px);
+}
+
+.sidebar {
+  width: 400px;
+  min-width: 400px;
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  height: calc(100vh - 64px);
+  padding: 20px 20px 120px;
+  position: sticky;
+  top: 64px;
+  background: var(--bg);
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 3px;
+}
+
+.preview-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 32px;
+  gap: 28px;
+  min-height: calc(100vh - 64px);
+  background: var(--bg);
+  transition: background 0.3s;
+}
+
+.preview-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  background: var(--preview-card-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.preview-container {
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-container.transparent-mode {
+  background-image:
+    linear-gradient(45deg, var(--checker-dark) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--checker-dark) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--checker-dark) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--checker-dark) 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+  background-color: var(--checker-bg);
+}
+
+.preview-container canvas,
+.preview-container svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.export-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+.btn {
+  font-family: var(--font-sans);
+  font-size: 0.875em;
+  font-weight: 600;
+  padding: 11px 24px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--btn-primary-text);
+}
+
+.btn-primary:hover {
+  opacity: 0.88;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  border-color: var(--text-muted);
+  background: var(--surface);
+}
+
+.btn-danger {
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid rgba(248,81,73,0.3);
+  font-size: 0.8em;
+  padding: 7px 14px;
+}
+
+.btn-danger:hover {
+  background: rgba(248,81,73,0.1);
+}
+
+/* ============================================
+   CONTROL SECTIONS
+   ============================================ */
+.control-section {
+  margin-bottom: 4px;
+}
+
+.url-section {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+details.control-section {
+  border-bottom: 1px solid var(--border);
+}
+
+details.control-section > summary {
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+details.control-section > summary::-webkit-details-marker {
+  display: none;
+}
+
+.section-header {
+  font-family: var(--font-mono);
+  font-size: 0.7em;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  padding: 14px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  opacity: 0.7;
+  transition: opacity 0.15s, color 0.3s;
+}
+
+.section-header:hover {
+  opacity: 1;
+}
+
+.section-header .chevron {
+  transition: transform 0.2s ease;
+  font-size: 1.2em;
+  line-height: 1;
+}
+
+details[open] > summary .chevron {
+  transform: rotate(90deg);
+}
+
+.section-body {
+  padding: 4px 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ============================================
+   CONTROL ROWS
+   ============================================ */
+.control-label {
+  font-size: 0.8em;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.control-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.9em;
+  outline: none;
+  transition: border-color 0.15s, background 0.3s, color 0.3s;
+}
+
+.control-input:focus {
+  border-color: var(--border-active);
+}
+
+.control-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* ============================================
+   RANGE SLIDERS
+   ============================================ */
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.slider-row label {
+  font-size: 0.8em;
+  color: var(--text-dim);
+  min-width: 56px;
+}
+
+.slider-row input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: var(--surface);
+  border-radius: 2px;
+  outline: none;
+}
+
+.slider-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 0 1px rgba(79,195,247,0.3);
+}
+
+.slider-row input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--bg);
+}
+
+.slider-value {
+  font-family: var(--font-mono);
+  font-size: 0.75em;
+  color: var(--text-dim);
+  min-width: 44px;
+  text-align: right;
+}
+
+/* ============================================
+   TOGGLE GROUPS
+   ============================================ */
+.toggle-group {
+  display: flex;
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.toggle-group input[type="radio"] {
+  display: none;
+}
+
+.toggle-group label {
+  flex: 1;
+  text-align: center;
+  padding: 8px 12px;
+  font-size: 0.8em;
+  font-weight: 500;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.15s;
+  border-right: 1px solid var(--border);
+}
+
+.toggle-group label:last-of-type {
+  border-right: none;
+}
+
+.toggle-group input[type="radio"]:checked + label {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+/* ============================================
+   COLOR PICKERS
+   ============================================ */
+.color-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.color-row label {
+  font-size: 0.8em;
+  color: var(--text-dim);
+  min-width: 56px;
+}
+
+.color-input-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.color-swatch-wrapper {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.color-swatch-wrapper input[type="color"] {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.color-swatch {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.hex-input {
+  width: 80px;
+  padding: 6px 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.75em;
+  outline: none;
+  text-transform: uppercase;
+  transition: background 0.3s, border-color 0.15s, color 0.3s;
+}
+
+.hex-input:focus {
+  border-color: var(--border-active);
+}
+
+.color-row.disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* ============================================
+   STYLE GRID
+   ============================================ */
+.style-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.style-tile {
+  aspect-ratio: 1;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  padding: 10px;
+  position: relative;
+}
+
+.style-tile:hover {
+  border-color: var(--text-muted);
+}
+
+.style-tile.active {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+}
+
+.style-tile svg {
+  width: 100%;
+  height: 100%;
+}
+
+.style-tile-label {
+  position: absolute;
+  bottom: 3px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.55em;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+/* ============================================
+   SWITCH TOGGLE
+   ============================================ */
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.switch-row span {
+  font-size: 0.8em;
+  color: var(--text-dim);
+}
+
+.switch {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  transition: all 0.2s;
+}
+
+.switch-slider::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  left: 2px;
+  top: 2px;
+  background: var(--text-dim);
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.switch input:checked + .switch-slider {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+}
+
+.switch input:checked + .switch-slider::before {
+  transform: translateX(18px);
+  background: var(--accent);
+}
+
+/* ============================================
+   LOGO UPLOAD
+   ============================================ */
+.logo-drop-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--surface);
+}
+
+.logo-drop-zone:hover {
+  border-color: var(--text-muted);
+}
+
+.logo-drop-zone.drag-over {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+}
+
+.logo-drop-zone p {
+  font-size: 0.8em;
+  color: var(--text-dim);
+}
+
+.logo-drop-zone .upload-icon {
+  font-size: 1.5em;
+  margin-bottom: 4px;
+  color: var(--text-muted);
+}
+
+.logo-preview-row {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.logo-preview-row.visible {
+  display: flex;
+}
+
+.logo-preview-thumb {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  object-fit: contain;
+  background: var(--bg);
+}
+
+.logo-preview-info {
+  flex: 1;
+  font-size: 0.8em;
+  color: var(--text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 900px) {
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-width: unset;
+    height: auto;
+    border-right: none;
+    border-top: 1px solid var(--border);
+    position: static;
+    order: 2;
+  }
+
+  .preview-area {
+    position: sticky;
+    top: 64px;
+    z-index: 10;
+    min-height: auto;
+    padding: 24px 16px;
+    border-bottom: 1px solid var(--border);
+    order: 1;
+  }
+
+  .preview-card {
+    padding: 20px;
+  }
+}
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+.empty-state {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9em;
+  padding: 40px;
+}
+</style>
+</head>
+<body data-theme="dark">
+
+<!-- ============================================
+     HEADER
+     ============================================ -->
+<header class="app-header">
+  <div class="app-brand">
+    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="6" cy="6" r="2.5" fill="currentColor" style="color:var(--accent)"/>
+      <circle cx="26" cy="6" r="2.5" fill="currentColor" style="color:var(--accent)"/>
+      <circle cx="16" cy="16" r="3" fill="currentColor" style="color:var(--accent)"/>
+      <circle cx="6" cy="26" r="2.5" fill="currentColor" style="color:var(--accent)"/>
+      <circle cx="26" cy="26" r="2.5" fill="currentColor" style="color:var(--accent)"/>
+      <line x1="6" y1="6" x2="16" y2="16" stroke="currentColor" style="color:var(--accent)" stroke-width="1" opacity="0.4"/>
+      <line x1="26" y1="6" x2="16" y2="16" stroke="currentColor" style="color:var(--accent)" stroke-width="1" opacity="0.4"/>
+      <line x1="6" y1="26" x2="16" y2="16" stroke="currentColor" style="color:var(--accent)" stroke-width="1" opacity="0.4"/>
+      <line x1="26" y1="26" x2="16" y2="16" stroke="currentColor" style="color:var(--accent)" stroke-width="1" opacity="0.4"/>
+      <line x1="6" y1="6" x2="26" y2="6" stroke="currentColor" style="color:var(--accent)" stroke-width="0.7" opacity="0.2"/>
+      <line x1="6" y1="26" x2="26" y2="26" stroke="currentColor" style="color:var(--accent)" stroke-width="0.7" opacity="0.2"/>
+    </svg>
+    <div>
+      <div class="app-title">QR Studio</div>
+      <div class="app-subtitle">QR Code Generator</div>
+    </div>
+  </div>
+  <button class="theme-toggle" id="theme-toggle" title="Toggle light/dark mode" aria-label="Toggle theme">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+  </button>
+</header>
+
+<!-- ============================================
+     MAIN LAYOUT
+     ============================================ -->
+<main class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+
+    <!-- URL INPUT -->
+    <div class="control-section url-section">
+      <label class="control-label" for="qr-data">URL or Text</label>
+      <input type="text" id="qr-data" class="control-input" placeholder="https://example.com" value="https://example.com">
+    </div>
+
+    <!-- QR OPTIONS -->
+    <details class="control-section" open>
+      <summary class="section-header">QR Options <span class="chevron">&#9656;</span></summary>
+      <div class="section-body">
+        <div>
+          <div class="slider-row">
+            <label>Size</label>
+            <input type="range" id="qr-size" min="100" max="1000" value="300" step="10">
+            <span class="slider-value" id="qr-size-val">300px</span>
+          </div>
+        </div>
+        <div>
+          <label class="control-label">Error Correction</label>
+          <div class="toggle-group">
+            <input type="radio" name="ec" id="ec-l" value="L"><label for="ec-l">L</label>
+            <input type="radio" name="ec" id="ec-m" value="M"><label for="ec-m">M</label>
+            <input type="radio" name="ec" id="ec-q" value="Q" checked><label for="ec-q">Q</label>
+            <input type="radio" name="ec" id="ec-h" value="H"><label for="ec-h">H</label>
+          </div>
+        </div>
+        <div>
+          <div class="slider-row">
+            <label>Margin</label>
+            <input type="range" id="qr-margin" min="0" max="50" value="10">
+            <span class="slider-value" id="qr-margin-val">10</span>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- DOT STYLE -->
+    <details class="control-section" open>
+      <summary class="section-header">Dot Style <span class="chevron">&#9656;</span></summary>
+      <div class="section-body">
+        <div>
+          <label class="control-label">Shape</label>
+          <div class="style-grid" id="dot-style-grid">
+            <button class="style-tile" data-style="square" title="Square">
+              <svg viewBox="0 0 40 40"><rect x="2" y="2" width="8" height="8" fill="currentColor" style="color:var(--accent)"/><rect x="14" y="2" width="8" height="8" fill="currentColor" style="color:var(--accent)"/><rect x="26" y="2" width="8" height="8" fill="currentColor" style="color:var(--accent)"/><rect x="2" y="14" width="8" height="8" fill="currentColor" style="color:var(--accent)"/><rect x="14" y="14" width="8" height="8" fill="currentColor" style="color:var(--accent)"/><rect x="26" y="14" width="8" height="8" fill="currentColor" style="color:var(--accent)"/><rect x="2" y="26" width="8" height="8" fill="currentColor" style="color:var(--accent)"/><rect x="14" y="26" width="8" height="8" fill="currentColor" style="color:var(--accent)"/><rect x="26" y="26" width="8" height="8" fill="currentColor" style="color:var(--accent)"/></svg>
+              <span class="style-tile-label">Square</span>
+            </button>
+            <button class="style-tile" data-style="dots" title="Dots">
+              <svg viewBox="0 0 40 40"><circle cx="6" cy="6" r="4" fill="currentColor" style="color:var(--accent)"/><circle cx="18" cy="6" r="4" fill="currentColor" style="color:var(--accent)"/><circle cx="30" cy="6" r="4" fill="currentColor" style="color:var(--accent)"/><circle cx="6" cy="18" r="4" fill="currentColor" style="color:var(--accent)"/><circle cx="18" cy="18" r="4" fill="currentColor" style="color:var(--accent)"/><circle cx="30" cy="18" r="4" fill="currentColor" style="color:var(--accent)"/><circle cx="6" cy="30" r="4" fill="currentColor" style="color:var(--accent)"/><circle cx="18" cy="30" r="4" fill="currentColor" style="color:var(--accent)"/><circle cx="30" cy="30" r="4" fill="currentColor" style="color:var(--accent)"/></svg>
+              <span class="style-tile-label">Dots</span>
+            </button>
+            <button class="style-tile active" data-style="rounded" title="Rounded">
+              <svg viewBox="0 0 40 40"><rect x="2" y="2" width="8" height="8" rx="2.5" fill="currentColor" style="color:var(--accent)"/><rect x="14" y="2" width="8" height="8" rx="2.5" fill="currentColor" style="color:var(--accent)"/><rect x="26" y="2" width="8" height="8" rx="2.5" fill="currentColor" style="color:var(--accent)"/><rect x="2" y="14" width="8" height="8" rx="2.5" fill="currentColor" style="color:var(--accent)"/><rect x="14" y="14" width="8" height="8" rx="2.5" fill="currentColor" style="color:var(--accent)"/><rect x="26" y="14" width="8" height="8" rx="2.5" fill="currentColor" style="color:var(--accent)"/><rect x="2" y="26" width="8" height="8" rx="2.5" fill="currentColor" style="color:var(--accent)"/><rect x="14" y="26" width="8" height="8" rx="2.5" fill="currentColor" style="color:var(--accent)"/><rect x="26" y="26" width="8" height="8" rx="2.5" fill="currentColor" style="color:var(--accent)"/></svg>
+              <span class="style-tile-label">Rounded</span>
+            </button>
+            <button class="style-tile" data-style="extra-rounded" title="Extra Rounded">
+              <svg viewBox="0 0 40 40"><rect x="2" y="2" width="8" height="8" rx="4" fill="currentColor" style="color:var(--accent)"/><rect x="14" y="2" width="8" height="8" rx="4" fill="currentColor" style="color:var(--accent)"/><rect x="26" y="2" width="8" height="8" rx="4" fill="currentColor" style="color:var(--accent)"/><rect x="2" y="14" width="8" height="8" rx="4" fill="currentColor" style="color:var(--accent)"/><rect x="14" y="14" width="8" height="8" rx="4" fill="currentColor" style="color:var(--accent)"/><rect x="26" y="14" width="8" height="8" rx="4" fill="currentColor" style="color:var(--accent)"/><rect x="2" y="26" width="8" height="8" rx="4" fill="currentColor" style="color:var(--accent)"/><rect x="14" y="26" width="8" height="8" rx="4" fill="currentColor" style="color:var(--accent)"/><rect x="26" y="26" width="8" height="8" rx="4" fill="currentColor" style="color:var(--accent)"/></svg>
+              <span class="style-tile-label">Extra Rnd</span>
+            </button>
+            <button class="style-tile" data-style="classy" title="Classy">
+              <svg viewBox="0 0 40 40"><path d="M2,2 h8 v4 q0,4 -4,4 h-4 z" fill="currentColor" style="color:var(--accent)"/><path d="M14,2 h8 v4 q0,4 -4,4 h-4 z" fill="currentColor" style="color:var(--accent)"/><path d="M26,2 h8 v4 q0,4 -4,4 h-4 z" fill="currentColor" style="color:var(--accent)"/><path d="M2,14 h8 v4 q0,4 -4,4 h-4 z" fill="currentColor" style="color:var(--accent)"/><path d="M14,14 h8 v4 q0,4 -4,4 h-4 z" fill="currentColor" style="color:var(--accent)"/><path d="M26,14 h8 v4 q0,4 -4,4 h-4 z" fill="currentColor" style="color:var(--accent)"/><path d="M2,26 h8 v4 q0,4 -4,4 h-4 z" fill="currentColor" style="color:var(--accent)"/><path d="M14,26 h8 v4 q0,4 -4,4 h-4 z" fill="currentColor" style="color:var(--accent)"/><path d="M26,26 h8 v4 q0,4 -4,4 h-4 z" fill="currentColor" style="color:var(--accent)"/></svg>
+              <span class="style-tile-label">Classy</span>
+            </button>
+            <button class="style-tile" data-style="classy-rounded" title="Classy Rounded">
+              <svg viewBox="0 0 40 40"><rect x="2" y="2" width="8" height="8" rx="3" ry="1" fill="currentColor" style="color:var(--accent)"/><rect x="14" y="2" width="8" height="8" rx="3" ry="1" fill="currentColor" style="color:var(--accent)"/><rect x="26" y="2" width="8" height="8" rx="3" ry="1" fill="currentColor" style="color:var(--accent)"/><rect x="2" y="14" width="8" height="8" rx="3" ry="1" fill="currentColor" style="color:var(--accent)"/><rect x="14" y="14" width="8" height="8" rx="3" ry="1" fill="currentColor" style="color:var(--accent)"/><rect x="26" y="14" width="8" height="8" rx="3" ry="1" fill="currentColor" style="color:var(--accent)"/><rect x="2" y="26" width="8" height="8" rx="3" ry="1" fill="currentColor" style="color:var(--accent)"/><rect x="14" y="26" width="8" height="8" rx="3" ry="1" fill="currentColor" style="color:var(--accent)"/><rect x="26" y="26" width="8" height="8" rx="3" ry="1" fill="currentColor" style="color:var(--accent)"/></svg>
+              <span class="style-tile-label">Classy Rnd</span>
+            </button>
+          </div>
+        </div>
+        <div>
+          <label class="control-label">Color Mode</label>
+          <div class="toggle-group">
+            <input type="radio" name="dot-color-mode" id="dot-solid" value="solid" checked><label for="dot-solid">Solid</label>
+            <input type="radio" name="dot-color-mode" id="dot-gradient" value="gradient"><label for="dot-gradient">Gradient</label>
+          </div>
+        </div>
+        <!-- Solid Color -->
+        <div id="dot-solid-controls">
+          <div class="color-row">
+            <label>Color</label>
+            <div class="color-input-group">
+              <div class="color-swatch-wrapper">
+                <input type="color" id="dot-color" value="#4fc3f7">
+                <div class="color-swatch" id="dot-color-swatch" style="background:#4fc3f7"></div>
+              </div>
+              <input type="text" class="hex-input" id="dot-color-hex" value="#4FC3F7" maxlength="7">
+            </div>
+          </div>
+        </div>
+        <!-- Gradient Controls -->
+        <div id="dot-gradient-controls" style="display:none">
+          <div class="toggle-group" style="margin-bottom:10px">
+            <input type="radio" name="grad-type" id="grad-linear" value="linear" checked><label for="grad-linear">Linear</label>
+            <input type="radio" name="grad-type" id="grad-radial" value="radial"><label for="grad-radial">Radial</label>
+          </div>
+          <div class="slider-row" id="grad-rotation-row">
+            <label>Angle</label>
+            <input type="range" id="grad-rotation" min="0" max="360" value="0">
+            <span class="slider-value" id="grad-rotation-val">0&deg;</span>
+          </div>
+          <div class="color-row">
+            <label>Start</label>
+            <div class="color-input-group">
+              <div class="color-swatch-wrapper">
+                <input type="color" id="grad-color1" value="#4fc3f7">
+                <div class="color-swatch" id="grad-color1-swatch" style="background:#4fc3f7"></div>
+              </div>
+              <input type="text" class="hex-input" id="grad-color1-hex" value="#4FC3F7" maxlength="7">
+            </div>
+          </div>
+          <div class="color-row">
+            <label>End</label>
+            <div class="color-input-group">
+              <div class="color-swatch-wrapper">
+                <input type="color" id="grad-color2" value="#e040fb">
+                <div class="color-swatch" id="grad-color2-swatch" style="background:#e040fb"></div>
+              </div>
+              <input type="text" class="hex-input" id="grad-color2-hex" value="#E040FB" maxlength="7">
+            </div>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- CORNER SQUARES -->
+    <details class="control-section">
+      <summary class="section-header">Corner Squares <span class="chevron">&#9656;</span></summary>
+      <div class="section-body">
+        <div>
+          <label class="control-label">Shape</label>
+          <div class="style-grid" id="corner-sq-style-grid">
+            <button class="style-tile" data-style="square" title="Square">
+              <svg viewBox="0 0 32 32"><rect x="2" y="2" width="28" height="28" fill="none" stroke="currentColor" style="color:var(--accent)" stroke-width="4"/></svg>
+              <span class="style-tile-label">Square</span>
+            </button>
+            <button class="style-tile" data-style="dot" title="Dot">
+              <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" fill="none" stroke="currentColor" style="color:var(--accent)" stroke-width="4"/></svg>
+              <span class="style-tile-label">Dot</span>
+            </button>
+            <button class="style-tile active" data-style="extra-rounded" title="Extra Rounded">
+              <svg viewBox="0 0 32 32"><rect x="2" y="2" width="28" height="28" rx="10" fill="none" stroke="currentColor" style="color:var(--accent)" stroke-width="4"/></svg>
+              <span class="style-tile-label">Rounded</span>
+            </button>
+          </div>
+        </div>
+        <div class="color-row" id="corner-sq-color-row">
+          <label>Color</label>
+          <div class="color-input-group">
+            <div class="color-swatch-wrapper">
+              <input type="color" id="corner-sq-color" value="#4fc3f7">
+              <div class="color-swatch" id="corner-sq-color-swatch" style="background:#4fc3f7"></div>
+            </div>
+            <input type="text" class="hex-input" id="corner-sq-color-hex" value="#4FC3F7" maxlength="7">
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- CORNER DOTS -->
+    <details class="control-section">
+      <summary class="section-header">Corner Dots <span class="chevron">&#9656;</span></summary>
+      <div class="section-body">
+        <div>
+          <label class="control-label">Shape</label>
+          <div class="style-grid" id="corner-dot-style-grid">
+            <button class="style-tile" data-style="square" title="Square">
+              <svg viewBox="0 0 32 32"><rect x="8" y="8" width="16" height="16" fill="currentColor" style="color:var(--accent)"/></svg>
+              <span class="style-tile-label">Square</span>
+            </button>
+            <button class="style-tile active" data-style="dot" title="Dot">
+              <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="8" fill="currentColor" style="color:var(--accent)"/></svg>
+              <span class="style-tile-label">Dot</span>
+            </button>
+          </div>
+        </div>
+        <div class="color-row" id="corner-dot-color-row">
+          <label>Color</label>
+          <div class="color-input-group">
+            <div class="color-swatch-wrapper">
+              <input type="color" id="corner-dot-color" value="#4fc3f7">
+              <div class="color-swatch" id="corner-dot-color-swatch" style="background:#4fc3f7"></div>
+            </div>
+            <input type="text" class="hex-input" id="corner-dot-color-hex" value="#4FC3F7" maxlength="7">
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- BACKGROUND -->
+    <details class="control-section" open>
+      <summary class="section-header">Background <span class="chevron">&#9656;</span></summary>
+      <div class="section-body">
+        <div class="switch-row">
+          <span>Transparent</span>
+          <label class="switch">
+            <input type="checkbox" id="bg-transparent">
+            <span class="switch-slider"></span>
+          </label>
+        </div>
+        <div class="color-row" id="bg-color-row">
+          <label>Color</label>
+          <div class="color-input-group">
+            <div class="color-swatch-wrapper">
+              <input type="color" id="bg-color" value="#0d1117">
+              <div class="color-swatch" id="bg-color-swatch" style="background:#0d1117"></div>
+            </div>
+            <input type="text" class="hex-input" id="bg-color-hex" value="#0D1117" maxlength="7">
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- CENTER LOGO -->
+    <details class="control-section">
+      <summary class="section-header">Center Logo <span class="chevron">&#9656;</span></summary>
+      <div class="section-body">
+        <div class="logo-drop-zone" id="logo-drop-zone">
+          <div class="upload-icon">&#8682;</div>
+          <p>Click or drag image here</p>
+          <input type="file" id="logo-upload-input" accept="image/*" style="display:none">
+        </div>
+        <div class="logo-preview-row" id="logo-preview-row">
+          <img class="logo-preview-thumb" id="logo-preview-thumb" src="" alt="Logo">
+          <span class="logo-preview-info" id="logo-preview-info">logo.png</span>
+          <button class="btn btn-danger" id="remove-logo">Remove</button>
+        </div>
+        <div>
+          <div class="slider-row">
+            <label>Size</label>
+            <input type="range" id="logo-size" min="10" max="50" value="35">
+            <span class="slider-value" id="logo-size-val">0.35</span>
+          </div>
+        </div>
+        <div>
+          <div class="slider-row">
+            <label>Margin</label>
+            <input type="range" id="logo-margin" min="0" max="20" value="5">
+            <span class="slider-value" id="logo-margin-val">5</span>
+          </div>
+        </div>
+        <div class="switch-row">
+          <span>Hide dots behind logo</span>
+          <label class="switch">
+            <input type="checkbox" id="logo-hide-dots" checked>
+            <span class="switch-slider"></span>
+          </label>
+        </div>
+      </div>
+    </details>
+
+  </aside>
+
+  <!-- PREVIEW AREA -->
+  <section class="preview-area">
+    <div class="preview-card">
+      <div class="preview-container" id="qr-preview"></div>
+    </div>
+    <div class="export-actions">
+      <button class="btn btn-primary" id="download-png">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v9m0 0L5 7m3 3l3-3M2 12v1a2 2 0 002 2h8a2 2 0 002-2v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Download PNG
+      </button>
+      <button class="btn btn-secondary" id="download-svg">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v9m0 0L5 7m3 3l3-3M2 12v1a2 2 0 002 2h8a2 2 0 002-2v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Download SVG
+      </button>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================
+     JAVASCRIPT
+     ============================================ -->
+<script>
+(function() {
+  'use strict';
+
+  // ============================================
+  // STATE
+  // ============================================
+  var state = {
+    data: 'https://example.com',
+    width: 300,
+    height: 300,
+    margin: 10,
+    qrOptions: {
+      errorCorrectionLevel: 'Q'
+    },
+    dotsOptions: {
+      type: 'rounded',
+      color: '#4fc3f7',
+      gradient: null
+    },
+    cornersSquareOptions: {
+      type: 'extra-rounded',
+      color: '#4fc3f7'
+    },
+    cornersDotOptions: {
+      type: 'dot',
+      color: '#4fc3f7'
+    },
+    backgroundOptions: {
+      color: '#0d1117'
+    },
+    image: '',
+    imageOptions: {
+      hideBackgroundDots: true,
+      imageSize: 0.35,
+      margin: 5,
+      crossOrigin: 'anonymous'
+    }
+  };
+
+  var qrCode = null;
+
+  // ============================================
+  // HELPERS
+  // ============================================
+  function debounce(fn, ms) {
+    var timer;
+    return function() {
+      var args = arguments;
+      var ctx = this;
+      clearTimeout(timer);
+      timer = setTimeout(function() { fn.apply(ctx, args); }, ms);
+    };
+  }
+
+  function isValidHex(val) {
+    return /^#[0-9a-fA-F]{6}$/.test(val);
+  }
+
+  function buildOptions() {
+    var opts = {
+      width: state.width,
+      height: state.height,
+      margin: state.margin,
+      type: 'canvas',
+      data: state.data || 'https://example.com',
+      qrOptions: { errorCorrectionLevel: state.qrOptions.errorCorrectionLevel },
+      dotsOptions: {},
+      cornersSquareOptions: {
+        type: state.cornersSquareOptions.type,
+        color: state.cornersSquareOptions.color
+      },
+      cornersDotOptions: {
+        type: state.cornersDotOptions.type,
+        color: state.cornersDotOptions.color
+      },
+      backgroundOptions: {
+        color: state.backgroundOptions.color
+      }
+    };
+
+    // Dot options: solid or gradient
+    if (state.dotsOptions.gradient) {
+      opts.dotsOptions = {
+        type: state.dotsOptions.type,
+        gradient: JSON.parse(JSON.stringify(state.dotsOptions.gradient))
+      };
+    } else {
+      opts.dotsOptions = {
+        type: state.dotsOptions.type,
+        color: state.dotsOptions.color
+      };
+    }
+
+    // Image / logo
+    if (state.image) {
+      opts.image = state.image;
+      opts.imageOptions = {
+        hideBackgroundDots: state.imageOptions.hideBackgroundDots,
+        imageSize: state.imageOptions.imageSize,
+        margin: state.imageOptions.margin,
+        crossOrigin: state.imageOptions.crossOrigin
+      };
+    }
+
+    return opts;
+  }
+
+  // ============================================
+  // QR CODE RENDERING
+  // ============================================
+  function initQR() {
+    var container = document.getElementById('qr-preview');
+    container.innerHTML = '';
+    qrCode = new QRCodeStyling(buildOptions());
+    qrCode.append(container);
+  }
+
+  function forceUpdate() {
+    if (!qrCode) return;
+    // Recreate for guaranteed fresh render
+    var container = document.getElementById('qr-preview');
+    container.innerHTML = '';
+    qrCode = new QRCodeStyling(buildOptions());
+    qrCode.append(container);
+  }
+
+  var debouncedUpdate = debounce(forceUpdate, 80);
+  var slowUpdate = debounce(forceUpdate, 300);
+
+  // ============================================
+  // THEME TOGGLE
+  // ============================================
+  function initTheme() {
+    var saved = localStorage.getItem('qr-studio-theme');
+    var theme = saved || 'dark';
+    document.body.setAttribute('data-theme', theme);
+
+    document.getElementById('theme-toggle').addEventListener('click', function() {
+      var current = document.body.getAttribute('data-theme');
+      var next = current === 'dark' ? 'light' : 'dark';
+      document.body.setAttribute('data-theme', next);
+      localStorage.setItem('qr-studio-theme', next);
+    });
+  }
+
+  // ============================================
+  // COLOR SYNC HELPER
+  // ============================================
+  function bindColorPicker(pickerId, hexId, swatchId, onChange) {
+    var picker = document.getElementById(pickerId);
+    var hex = document.getElementById(hexId);
+    var swatch = document.getElementById(swatchId);
+
+    picker.addEventListener('input', function() {
+      var val = picker.value;
+      hex.value = val.toUpperCase();
+      swatch.style.background = val;
+      onChange(val);
+    });
+
+    hex.addEventListener('change', function() {
+      var val = hex.value.trim();
+      if (!val.startsWith('#')) val = '#' + val;
+      if (isValidHex(val)) {
+        picker.value = val;
+        hex.value = val.toUpperCase();
+        swatch.style.background = val;
+        onChange(val);
+      } else {
+        hex.value = picker.value.toUpperCase();
+      }
+    });
+  }
+
+  // ============================================
+  // STYLE GRID HELPER
+  // ============================================
+  function bindStyleGrid(gridId, onSelect) {
+    var grid = document.getElementById(gridId);
+    grid.addEventListener('click', function(e) {
+      var tile = e.target.closest('.style-tile');
+      if (!tile) return;
+      grid.querySelectorAll('.style-tile').forEach(function(t) { t.classList.remove('active'); });
+      tile.classList.add('active');
+      onSelect(tile.dataset.style);
+    });
+  }
+
+  // ============================================
+  // BIND ALL CONTROLS
+  // ============================================
+  function bindControls() {
+    // --- URL ---
+    var dataInput = document.getElementById('qr-data');
+    dataInput.addEventListener('input', function() {
+      state.data = dataInput.value;
+      slowUpdate();
+    });
+
+    // --- Size ---
+    var sizeSlider = document.getElementById('qr-size');
+    var sizeVal = document.getElementById('qr-size-val');
+    sizeSlider.addEventListener('input', function() {
+      var v = parseInt(sizeSlider.value);
+      state.width = v;
+      state.height = v;
+      sizeVal.textContent = v + 'px';
+      debouncedUpdate();
+    });
+
+    // --- Margin ---
+    var marginSlider = document.getElementById('qr-margin');
+    var marginVal = document.getElementById('qr-margin-val');
+    marginSlider.addEventListener('input', function() {
+      state.margin = parseInt(marginSlider.value);
+      marginVal.textContent = marginSlider.value;
+      debouncedUpdate();
+    });
+
+    // --- Error Correction ---
+    document.querySelectorAll('input[name="ec"]').forEach(function(radio) {
+      radio.addEventListener('change', function() {
+        state.qrOptions.errorCorrectionLevel = radio.value;
+        forceUpdate();
+      });
+    });
+
+    // --- Dot Style Grid ---
+    bindStyleGrid('dot-style-grid', function(style) {
+      state.dotsOptions.type = style;
+      forceUpdate();
+    });
+
+    // --- Dot Color Mode ---
+    document.querySelectorAll('input[name="dot-color-mode"]').forEach(function(radio) {
+      radio.addEventListener('change', function() {
+        if (radio.value === 'solid') {
+          state.dotsOptions.gradient = null;
+          state.dotsOptions.color = document.getElementById('dot-color').value;
+          document.getElementById('dot-solid-controls').style.display = '';
+          document.getElementById('dot-gradient-controls').style.display = 'none';
+        } else {
+          state.dotsOptions.gradient = {
+            type: document.getElementById('grad-linear').checked ? 'linear' : 'radial',
+            rotation: (parseInt(document.getElementById('grad-rotation').value) * Math.PI) / 180,
+            colorStops: [
+              { offset: 0, color: document.getElementById('grad-color1').value },
+              { offset: 1, color: document.getElementById('grad-color2').value }
+            ]
+          };
+          delete state.dotsOptions.color;
+          document.getElementById('dot-solid-controls').style.display = 'none';
+          document.getElementById('dot-gradient-controls').style.display = '';
+        }
+        forceUpdate();
+      });
+    });
+
+    // --- Dot Solid Color ---
+    bindColorPicker('dot-color', 'dot-color-hex', 'dot-color-swatch', function(val) {
+      if (!state.dotsOptions.gradient) {
+        state.dotsOptions.color = val;
+      }
+      debouncedUpdate();
+    });
+
+    // --- Gradient Type ---
+    document.querySelectorAll('input[name="grad-type"]').forEach(function(radio) {
+      radio.addEventListener('change', function() {
+        if (state.dotsOptions.gradient) {
+          state.dotsOptions.gradient.type = radio.value;
+          document.getElementById('grad-rotation-row').style.display =
+            radio.value === 'radial' ? 'none' : '';
+        }
+        forceUpdate();
+      });
+    });
+
+    // --- Gradient Rotation ---
+    var gradRotation = document.getElementById('grad-rotation');
+    var gradRotationVal = document.getElementById('grad-rotation-val');
+    gradRotation.addEventListener('input', function() {
+      var deg = parseInt(gradRotation.value);
+      gradRotationVal.innerHTML = deg + '&deg;';
+      if (state.dotsOptions.gradient) {
+        state.dotsOptions.gradient.rotation = (deg * Math.PI) / 180;
+      }
+      debouncedUpdate();
+    });
+
+    // --- Gradient Colors ---
+    bindColorPicker('grad-color1', 'grad-color1-hex', 'grad-color1-swatch', function(val) {
+      if (state.dotsOptions.gradient) {
+        state.dotsOptions.gradient.colorStops[0].color = val;
+      }
+      debouncedUpdate();
+    });
+
+    bindColorPicker('grad-color2', 'grad-color2-hex', 'grad-color2-swatch', function(val) {
+      if (state.dotsOptions.gradient) {
+        state.dotsOptions.gradient.colorStops[1].color = val;
+      }
+      debouncedUpdate();
+    });
+
+    // --- Corner Squares ---
+    bindStyleGrid('corner-sq-style-grid', function(style) {
+      state.cornersSquareOptions.type = style;
+      forceUpdate();
+    });
+
+    bindColorPicker('corner-sq-color', 'corner-sq-color-hex', 'corner-sq-color-swatch', function(val) {
+      state.cornersSquareOptions.color = val;
+      debouncedUpdate();
+    });
+
+    // --- Corner Dots ---
+    bindStyleGrid('corner-dot-style-grid', function(style) {
+      state.cornersDotOptions.type = style;
+      forceUpdate();
+    });
+
+    bindColorPicker('corner-dot-color', 'corner-dot-color-hex', 'corner-dot-color-swatch', function(val) {
+      state.cornersDotOptions.color = val;
+      debouncedUpdate();
+    });
+
+    // --- Background Transparent ---
+    var bgTransparent = document.getElementById('bg-transparent');
+    bgTransparent.addEventListener('change', function() {
+      var preview = document.getElementById('qr-preview');
+      if (bgTransparent.checked) {
+        state.backgroundOptions.color = 'transparent';
+        preview.classList.add('transparent-mode');
+        document.getElementById('bg-color-row').classList.add('disabled');
+      } else {
+        var c = document.getElementById('bg-color').value;
+        state.backgroundOptions.color = c;
+        preview.classList.remove('transparent-mode');
+        document.getElementById('bg-color-row').classList.remove('disabled');
+      }
+      forceUpdate();
+    });
+
+    // --- Background Color ---
+    bindColorPicker('bg-color', 'bg-color-hex', 'bg-color-swatch', function(val) {
+      if (!bgTransparent.checked) {
+        state.backgroundOptions.color = val;
+      }
+      debouncedUpdate();
+    });
+
+    // --- Logo Upload ---
+    var dropZone = document.getElementById('logo-drop-zone');
+    var fileInput = document.getElementById('logo-upload-input');
+    var previewRow = document.getElementById('logo-preview-row');
+    var previewThumb = document.getElementById('logo-preview-thumb');
+    var previewInfo = document.getElementById('logo-preview-info');
+
+    function handleLogoFile(file) {
+      if (!file || !file.type.startsWith('image/')) return;
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        state.image = e.target.result;
+        previewThumb.src = e.target.result;
+        previewInfo.textContent = file.name;
+        previewRow.classList.add('visible');
+        dropZone.style.display = 'none';
+        forceUpdate();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    dropZone.addEventListener('click', function() { fileInput.click(); });
+
+    dropZone.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      dropZone.classList.add('drag-over');
+    });
+
+    dropZone.addEventListener('dragleave', function() {
+      dropZone.classList.remove('drag-over');
+    });
+
+    dropZone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+      handleLogoFile(e.dataTransfer.files[0]);
+    });
+
+    fileInput.addEventListener('change', function() {
+      handleLogoFile(fileInput.files[0]);
+    });
+
+    document.getElementById('remove-logo').addEventListener('click', function() {
+      state.image = '';
+      fileInput.value = '';
+      previewRow.classList.remove('visible');
+      dropZone.style.display = '';
+      forceUpdate();
+    });
+
+    // --- Logo Size ---
+    var logoSize = document.getElementById('logo-size');
+    var logoSizeVal = document.getElementById('logo-size-val');
+    logoSize.addEventListener('input', function() {
+      var v = parseInt(logoSize.value) / 100;
+      state.imageOptions.imageSize = v;
+      logoSizeVal.textContent = v.toFixed(2);
+      debouncedUpdate();
+    });
+
+    // --- Logo Margin ---
+    var logoMargin = document.getElementById('logo-margin');
+    var logoMarginVal = document.getElementById('logo-margin-val');
+    logoMargin.addEventListener('input', function() {
+      state.imageOptions.margin = parseInt(logoMargin.value);
+      logoMarginVal.textContent = logoMargin.value;
+      debouncedUpdate();
+    });
+
+    // --- Logo Hide Dots ---
+    document.getElementById('logo-hide-dots').addEventListener('change', function() {
+      state.imageOptions.hideBackgroundDots = this.checked;
+      forceUpdate();
+    });
+
+    // --- Export PNG ---
+    document.getElementById('download-png').addEventListener('click', function() {
+      if (!qrCode) return;
+      qrCode.download({ name: 'qr-code', extension: 'png' });
+    });
+
+    // --- Export SVG ---
+    document.getElementById('download-svg').addEventListener('click', function() {
+      if (!qrCode) return;
+      var svgOpts = buildOptions();
+      svgOpts.type = 'svg';
+      var svgQR = new QRCodeStyling(svgOpts);
+      svgQR.download({ name: 'qr-code', extension: 'svg' });
+    });
+  }
+
+  // ============================================
+  // INIT
+  // ============================================
+  document.addEventListener('DOMContentLoaded', function() {
+    initTheme();
+    initQR();
+    bindControls();
+  });
+
+})();
+</script>
+
+</body>
+</html>
